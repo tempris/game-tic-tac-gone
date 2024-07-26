@@ -19,105 +19,89 @@ PlayerType winner = PlayerType::None;
 
 AI ai(PlayerType::Player2, PlayerType::Player1);
 
-void initializeGrid();
-void drawGrid(sf::RenderWindow& window, sf::Font& font);
-bool handleClick(int x, int y);
-void handleMainMenu(sf::RenderWindow& window, Button& startButton, Button& quitButton, GameState& state);
-void handlePauseMenu(sf::RenderWindow& window, Button& resumeButton, Button& mainMenuButton, GameState& state);
-void handlePlayingState(sf::RenderWindow& window, sf::Font& font, GameState& state);
-void handleGameOverState(sf::RenderWindow& window, sf::Font& font, Button& mainMenuButton, GameState& state);
+// Declare buttons globally without initialization
+Button startButton(0, 0, 200, 50, *(new sf::Font()), "Start Game");
+Button quitButton(0, 0, 200, 50, *(new sf::Font()), "Quit");
+Button doNothingButton(0, 0, 200, 50, *(new sf::Font()), "Do Nothing");
+Button resumeButton(0, 0, 200, 50, *(new sf::Font()), "Resume");
+Button mainMenuButton(0, 0, 200, 50, *(new sf::Font()), "Main Menu");
 
-void initializeGrid() {
-    grid = Grid();
-    currentPlayer = PlayerType::Player1;
-    winner = PlayerType::None;
+void centerButton(Button& button, float windowWidth, float windowHeight, float yOffset);
+void handleMainMenu(sf::RenderWindow& window, GameState& state, sf::View& view);
+void handlePauseMenu(sf::RenderWindow& window, GameState& state, sf::View& view);
+void handlePlayingState(sf::RenderWindow& window, sf::Font& font, GameState& state, sf::View& view);
+void handleGameOverState(sf::RenderWindow& window, sf::Font& font, GameState& state, sf::View& view);
+void updateView(sf::RenderWindow& window, sf::View& view);
+void initializeElements(sf::RenderWindow& window, sf::View& view);
+
+void centerButton(Button& button, float windowWidth, float windowHeight, float yOffset) {
+    float buttonWidth = button.getWidth();
+    float buttonHeight = button.getHeight();
+    button.setPosition((windowWidth - buttonWidth) / 2.0f, (windowHeight - buttonHeight) / 2.0f + yOffset);
 }
 
-void drawGrid(sf::RenderWindow& window, sf::Font& font) {
-    const float gridStartX = 100.0f;
-    const float gridStartY = 100.0f;
-    const float cellSize = 100.0f;
-    const float gridSizeInPixels = cellSize * gridSize;
-
-    // Center the grid
-    const float offsetX = (window.getSize().x - gridSizeInPixels) / 2;
-    const float offsetY = (window.getSize().y - gridSizeInPixels) / 2;
-
-    sf::RectangleShape line(sf::Vector2f(gridSizeInPixels, 5));
-    line.setFillColor(sf::Color::White);
-    for (int i = 1; i < gridSize; ++i) {
-        line.setPosition(offsetX, offsetY + i * cellSize);
-        window.draw(line);
-        line.setSize(sf::Vector2f(5, gridSizeInPixels));
-        line.setPosition(offsetX + i * cellSize, offsetY);
-        window.draw(line);
-        line.setSize(sf::Vector2f(gridSizeInPixels, 5));
-    }
-
-    sf::Text text;
-    text.setFont(font);
-    text.setCharacterSize(80);
-    for (int i = 0; i < gridSize; ++i) {
-        for (int j = 0; j < gridSize; ++j) {
-            PlayerType cell = grid.getCell(i, j);
-            if (cell != PlayerType::None) {
-                text.setString(cell == PlayerType::Player1 ? "X" : "O");
-                text.setPosition(offsetX + j * cellSize + 20, offsetY + i * cellSize);
-                window.draw(text);
-            }
-        }
-    }
+void updateView(sf::RenderWindow& window, sf::View& view) {
+    view.setSize(window.getSize().x, window.getSize().y);
+    view.setCenter(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
+    window.setView(view);
 }
 
-bool handleClick(int x, int y) {
-    const float gridStartX = 100.0f;
-    const float gridStartY = 100.0f;
-    const float cellSize = 100.0f;
-    const float gridSizeInPixels = cellSize * gridSize;
-
-    const float offsetX = (800 - gridSizeInPixels) / 2.0f;
-    const float offsetY = (600 - gridSizeInPixels) / 2.0f;
-
-    int row = static_cast<int>((y - offsetY) / cellSize);
-    int col = static_cast<int>((x - offsetX) / cellSize);
-    if (row >= 0 && row < gridSize && col >= 0 && col < gridSize && grid.isCellEmpty(row, col)) {
-        grid.setCell(row, col, currentPlayer);
-        currentPlayer = (currentPlayer == PlayerType::Player1) ? PlayerType::Player2 : PlayerType::Player1;
-        return true;
-    }
-    return false;
+void initializeElements(sf::RenderWindow& window, sf::View& view) {
+    updateView(window, view);
+    grid.updateSize(window.getSize().x, window.getSize().y);
+    centerButton(startButton, window.getSize().x, window.getSize().y, -100);
+    centerButton(quitButton, window.getSize().x, window.getSize().y, 0);
+    centerButton(doNothingButton, window.getSize().x, window.getSize().y, 100);
+    centerButton(resumeButton, window.getSize().x, window.getSize().y, -50);
+    centerButton(mainMenuButton, window.getSize().x, window.getSize().y, 50);
 }
 
-void handleMainMenu(sf::RenderWindow& window, Button& startButton, Button& quitButton, GameState& state) {
+void handleMainMenu(sf::RenderWindow& window, GameState& state, sf::View& view) {
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             window.close();
 
+        if (event.type == sf::Event::Resized) {
+            initializeElements(window, view);
+        }
+
         startButton.update(sf::Mouse::getPosition(window), event);
         quitButton.update(sf::Mouse::getPosition(window), event);
+        doNothingButton.update(sf::Mouse::getPosition(window), event);
 
         if (startButton.isClicked()) {
             state = GameState::Playing;
-            initializeGrid();
+            grid.initialize();
+            currentPlayer = PlayerType::Player1;
+            winner = PlayerType::None;
         }
 
         if (quitButton.isClicked()) {
             window.close();
+        }
+
+        if (doNothingButton.isClicked()) {
+            // Do nothing
         }
     }
 
     window.clear();
     startButton.draw(window);
     quitButton.draw(window);
+    doNothingButton.draw(window);
     window.display();
 }
 
-void handlePauseMenu(sf::RenderWindow& window, Button& resumeButton, Button& mainMenuButton, GameState& state) {
+void handlePauseMenu(sf::RenderWindow& window, GameState& state, sf::View& view) {
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             window.close();
+
+        if (event.type == sf::Event::Resized) {
+            initializeElements(window, view);
+        }
 
         resumeButton.update(sf::Mouse::getPosition(window), event);
         mainMenuButton.update(sf::Mouse::getPosition(window), event);
@@ -137,11 +121,15 @@ void handlePauseMenu(sf::RenderWindow& window, Button& resumeButton, Button& mai
     window.display();
 }
 
-void handlePlayingState(sf::RenderWindow& window, sf::Font& font, GameState& state) {
+void handlePlayingState(sf::RenderWindow& window, sf::Font& font, GameState& state, sf::View& view) {
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             window.close();
+
+        if (event.type == sf::Event::Resized) {
+            initializeElements(window, view);
+        }
 
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
             state = GameState::Paused;
@@ -149,7 +137,7 @@ void handlePlayingState(sf::RenderWindow& window, sf::Font& font, GameState& sta
 
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
             if (currentPlayer == PlayerType::Player1) {
-                if (handleClick(event.mouseButton.x, event.mouseButton.y)) {
+                if (grid.handleClick(event.mouseButton.x, event.mouseButton.y, currentPlayer)) {
                     if (grid.checkWin(PlayerType::Player1)) {
                         winner = PlayerType::Player1;
                         state = GameState::GameOver;
@@ -180,15 +168,19 @@ void handlePlayingState(sf::RenderWindow& window, sf::Font& font, GameState& sta
     }
 
     window.clear();
-    drawGrid(window, font);
+    grid.draw(window, font);
     window.display();
 }
 
-void handleGameOverState(sf::RenderWindow& window, sf::Font& font, Button& mainMenuButton, GameState& state) {
+void handleGameOverState(sf::RenderWindow& window, sf::Font& font, GameState& state, sf::View& view) {
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             window.close();
+
+        if (event.type == sf::Event::Resized) {
+            initializeElements(window, view);
+        }
 
         mainMenuButton.update(sf::Mouse::getPosition(window), event);
 
@@ -209,7 +201,7 @@ void handleGameOverState(sf::RenderWindow& window, sf::Font& font, Button& mainM
     else {
         winText.setString(winner == PlayerType::Player1 ? "Player 1 Wins!" : "Player 2 Wins!");
     }
-    winText.setPosition(200, 100);
+    winText.setPosition((window.getSize().x - winText.getLocalBounds().width) / 2.0f, 100);
     window.draw(winText);
 
     mainMenuButton.draw(window);
@@ -220,32 +212,40 @@ void handleGameOverState(sf::RenderWindow& window, sf::Font& font, Button& mainM
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Tic-Tac-Toe-Bananza");
 
+    sf::View view(sf::FloatRect(0, 0, 800, 600));
+    window.setView(view);
+
     sf::Font font;
     if (!font.loadFromFile("content/font/NotoSans-Regular.ttf")) {
         std::cerr << "Failed to load font!" << std::endl;
         return EXIT_FAILURE;
     }
 
-    Button startButton(300, 200, 200, 50, font, "Start Game");
-    Button quitButton(300, 300, 200, 50, font, "Quit");
-    Button resumeButton(300, 200, 200, 50, font, "Resume");
-    Button mainMenuButton(300, 300, 200, 50, font, "Main Menu");
+    // Initialize button text with font after loading the font
+    startButton = Button(300, 200, 200, 50, font, "Start Game");
+    quitButton = Button(300, 300, 200, 50, font, "Quit");
+    doNothingButton = Button(300, 400, 200, 50, font, "Do Nothing");
+    resumeButton = Button(300, 200, 200, 50, font, "Resume");
+    mainMenuButton = Button(300, 300, 200, 50, font, "Main Menu");
+
+    // Initialize elements initially
+    initializeElements(window, view);
 
     GameState state = GameState::MainMenu;
 
     while (window.isOpen()) {
         switch (state) {
         case GameState::MainMenu:
-            handleMainMenu(window, startButton, quitButton, state);
+            handleMainMenu(window, state, view);
             break;
         case GameState::Playing:
-            handlePlayingState(window, font, state);
+            handlePlayingState(window, font, state, view);
             break;
         case GameState::Paused:
-            handlePauseMenu(window, resumeButton, mainMenuButton, state);
+            handlePauseMenu(window, state, view);
             break;
         case GameState::GameOver:
-            handleGameOverState(window, font, mainMenuButton, state);
+            handleGameOverState(window, font, state, view);
             break;
         }
     }

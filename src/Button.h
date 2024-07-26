@@ -2,81 +2,72 @@
 #define BUTTON_H
 
 #include <SFML/Graphics.hpp>
+#include <string>
 
 class Button {
 public:
-    Button(float x, float y, float width, float height, const sf::Font& font, const std::string& text) {
-        buttonShape.setPosition(sf::Vector2f(x, y));
-        buttonShape.setSize(sf::Vector2f(width, height));
-        buttonShape.setFillColor(defaultColor);
+    Button(float x, float y, float width, float height, sf::Font& font, const std::string& text) {
+        button.setSize(sf::Vector2f(width, height));
+        button.setPosition(x, y);
+        button.setFillColor(sf::Color::White);
+        button.setOutlineThickness(2);
+        button.setOutlineColor(sf::Color::Black);
 
-        buttonText.setFont(font);
-        buttonText.setString(text);
-        buttonText.setCharacterSize(20);
-        buttonText.setFillColor(sf::Color::Black);
-        buttonText.setPosition(
-            x + (width / 2.f) - (buttonText.getGlobalBounds().width / 2.f),
-            y + (height / 2.f) - (buttonText.getGlobalBounds().height / 2.f)
-        );
-    }
+        this->text.setFont(font);
+        this->text.setString(text);
+        this->text.setCharacterSize(30);
+        this->text.setFillColor(sf::Color::Black);
 
-    void draw(sf::RenderWindow& window) {
-        window.draw(buttonShape);
-        window.draw(buttonText);
+        // Adjust the text position to center it within the button
+        sf::FloatRect textRect = this->text.getLocalBounds();
+        this->text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+        this->text.setPosition(x + width / 2.0f, y + height / 2.0f);
     }
 
     void update(const sf::Vector2i& mousePos, sf::Event& event) {
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-            if (buttonShape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
-                isPressed = true;
-                buttonShape.setFillColor(clickColor);
-            }
-        }
-        else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
-            if (isPressed && buttonShape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
-                isPressed = false;
-                buttonShape.setFillColor(hoverColor);
-                wasClicked = true;
-            }
-            else {
-                isPressed = false;
-                buttonShape.setFillColor(defaultColor);
+        if (button.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+            button.setFillColor(sf::Color(200, 200, 200)); // Hover color
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                button.setFillColor(sf::Color(150, 150, 150)); // Clicked color
+                clicked = true;
             }
         }
         else {
-            isHovered(mousePos);
+            button.setFillColor(sf::Color::White);
         }
     }
 
+    void draw(sf::RenderWindow& window) {
+        window.draw(button);
+        window.draw(text);
+    }
+
     bool isClicked() {
-        if (wasClicked) {
-            wasClicked = false;
+        if (clicked) {
+            clicked = false;
             return true;
         }
         return false;
     }
 
-private:
-    sf::RectangleShape buttonShape;
-    sf::Text buttonText;
-
-    bool isPressed = false;
-    bool wasClicked = false;
-
-    sf::Color defaultColor = sf::Color::Green;
-    sf::Color hoverColor = sf::Color::Yellow;
-    sf::Color clickColor = sf::Color::Red;
-
-    void isHovered(const sf::Vector2i& mousePos) {
-        if (buttonShape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
-            if (!isPressed)
-                buttonShape.setFillColor(hoverColor);
-        }
-        else {
-            if (!isPressed)
-                buttonShape.setFillColor(defaultColor);
-        }
+    float getWidth() const {
+        return button.getSize().x;
     }
+
+    float getHeight() const {
+        return button.getSize().y;
+    }
+
+    void setPosition(float x, float y) {
+        button.setPosition(x, y);
+        sf::FloatRect textRect = text.getLocalBounds();
+        text.setPosition(x + button.getSize().x / 2.0f, y + button.getSize().y / 2.0f);
+    }
+
+private:
+    sf::RectangleShape button;
+    sf::Text text;
+    bool clicked = false;
 };
 
 #endif // BUTTON_H
