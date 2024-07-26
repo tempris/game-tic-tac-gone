@@ -1,6 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Button.h"
+#include "Grid.h"
+#include "Player.h"
+#include "AI.h"
+#include "GameDefinitions.h"
 
 enum class GameState {
     MainMenu,
@@ -9,25 +13,24 @@ enum class GameState {
     GameOver
 };
 
-enum class Player {
-    None,
-    Player1,
-    Player2
-};
+Grid grid;
+PlayerType currentPlayer = PlayerType::Player1;
+PlayerType winner = PlayerType::None;
 
-const int gridSize = 3;
-Player grid[gridSize][gridSize];
-Player currentPlayer = Player::Player1;
-Player winner = Player::None;
+AI ai(PlayerType::Player2, PlayerType::Player1);
+
+void initializeGrid();
+void drawGrid(sf::RenderWindow& window, sf::Font& font);
+bool handleClick(int x, int y);
+void handleMainMenu(sf::RenderWindow& window, Button& startButton, Button& quitButton, GameState& state);
+void handlePauseMenu(sf::RenderWindow& window, Button& resumeButton, Button& mainMenuButton, GameState& state);
+void handlePlayingState(sf::RenderWindow& window, sf::Font& font, GameState& state);
+void handleGameOverState(sf::RenderWindow& window, sf::Font& font, Button& mainMenuButton, GameState& state);
 
 void initializeGrid() {
-    for (int i = 0; i < gridSize; ++i) {
-        for (int j = 0; j < gridSize; ++j) {
-            grid[i][j] = Player::None;
-        }
-    }
-    currentPlayer = Player::Player1;
-    winner = Player::None;
+    grid = Grid();
+    currentPlayer = PlayerType::Player1;
+    winner = PlayerType::None;
 }
 
 void drawGrid(sf::RenderWindow& window, sf::Font& font) {
@@ -56,8 +59,9 @@ void drawGrid(sf::RenderWindow& window, sf::Font& font) {
     text.setCharacterSize(80);
     for (int i = 0; i < gridSize; ++i) {
         for (int j = 0; j < gridSize; ++j) {
-            if (grid[i][j] != Player::None) {
-                text.setString(grid[i][j] == Player::Player1 ? "X" : "O");
+            PlayerType cell = grid.getCell(i, j);
+            if (cell != PlayerType::None) {
+                text.setString(cell == PlayerType::Player1 ? "X" : "O");
                 text.setPosition(offsetX + j * cellSize + 20, offsetY + i * cellSize);
                 window.draw(text);
             }
@@ -71,30 +75,16 @@ bool handleClick(int x, int y) {
     const float cellSize = 100.0f;
     const float gridSizeInPixels = cellSize * gridSize;
 
-    const float offsetX = (800 - gridSizeInPixels) / 2;
-    const float offsetY = (600 - gridSizeInPixels) / 2;
+    const float offsetX = (800 - gridSizeInPixels) / 2.0f;
+    const float offsetY = (600 - gridSizeInPixels) / 2.0f;
 
-    int row = (y - offsetY) / cellSize;
-    int col = (x - offsetX) / cellSize;
-    if (row >= 0 && row < gridSize && col >= 0 && col < gridSize && grid[row][col] == Player::None) {
-        grid[row][col] = currentPlayer;
-        currentPlayer = (currentPlayer == Player::Player1) ? Player::Player2 : Player::Player1;
+    int row = static_cast<int>((y - offsetY) / cellSize);
+    int col = static_cast<int>((x - offsetX) / cellSize);
+    if (row >= 0 && row < gridSize && col >= 0 && col < gridSize && grid.isCellEmpty(row, col)) {
+        grid.setCell(row, col, currentPlayer);
+        currentPlayer = (currentPlayer == PlayerType::Player1) ? PlayerType::Player2 : PlayerType::Player1;
         return true;
     }
-    return false;
-}
-
-bool checkWin(Player player) {
-    for (int i = 0; i < gridSize; ++i) {
-        if (grid[i][0] == player && grid[i][1] == player && grid[i][2] == player)
-            return true;
-        if (grid[0][i] == player && grid[1][i] == player && grid[2][i] == player)
-            return true;
-    }
-    if (grid[0][0] == player && grid[1][1] == player && grid[2][2] == player)
-        return true;
-    if (grid[0][2] == player && grid[1][1] == player && grid[2][0] == player)
-        return true;
     return false;
 }
 
@@ -158,17 +148,35 @@ void handlePlayingState(sf::RenderWindow& window, sf::Font& font, GameState& sta
         }
 
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-            if (handleClick(event.mouseButton.x, event.mouseButton.y)) {
-                if (checkWin(Player::Player1)) {
-                    winner = Player::Player1;
-                    state = GameState::GameOver;
-                }
-                else if (checkWin(Player::Player2)) {
-                    winner = Player::Player2;
-                    state = GameState::GameOver;
+            if (currentPlayer == PlayerType::Player1) {
+                if (handleClick(event.mouseButton.x, event.mouseButton.y)) {
+                    if (grid.checkWin(PlayerType::Player1)) {
+                        winner = PlayerType::Player1;
+                        state = GameState::GameOver;
+                    }
+                    else if (grid.isFull()) {
+                        winner = PlayerType::None;
+                        state = GameState::GameOver;
+                    }
+                    else {
+                        currentPlayer = PlayerType::Player2;
+                    }
                 }
             }
         }
+    }
+
+    if (currentPlayer == PlayerType::Player2) {
+        ai.makeMove(grid);
+        if (grid.checkWin(PlayerType::Player2)) {
+            winner = PlayerType::Player2;
+            state = GameState::GameOver;
+        }
+        else if (grid.isFull()) {
+            winner = PlayerType::None;
+            state = GameState::GameOver;
+        }
+        currentPlayer = PlayerType::Player1;
     }
 
     window.clear();
@@ -195,7 +203,12 @@ void handleGameOverState(sf::RenderWindow& window, sf::Font& font, Button& mainM
     winText.setFont(font);
     winText.setCharacterSize(50);
     winText.setFillColor(sf::Color::White);
-    winText.setString(winner == Player::Player1 ? "Player 1 Wins!" : "Player 2 Wins!");
+    if (winner == PlayerType::None) {
+        winText.setString("Tie Game!");
+    }
+    else {
+        winText.setString(winner == PlayerType::Player1 ? "Player 1 Wins!" : "Player 2 Wins!");
+    }
     winText.setPosition(200, 100);
     window.draw(winText);
 
