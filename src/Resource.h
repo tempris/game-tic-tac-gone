@@ -1,13 +1,13 @@
-#ifndef RESOURCE_MANAGER_H
-#define RESOURCE_MANAGER_H
+#ifndef RESOURCE_H
+#define RESOURCE_H
 
-#include <SFML/Graphics.hpp>
+#include "IResource.h"
 #include <memory>
 
-class Resource {
+class Resource : public IResource {
 public:
     static Resource& getInstance();
-    sf::Font& getFont();
+    sf::Font& getFont() override;
 
 private:
     Resource();
@@ -17,4 +17,4 @@ private:
     std::unique_ptr<sf::Font> font;
 };
 
-#endif // RESOURCE_MANAGER_H
+#endif // RESOURCE_H

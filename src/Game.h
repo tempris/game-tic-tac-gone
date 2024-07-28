@@ -7,17 +7,17 @@
 #include "IAI.h"
 #include "Shared.h"
 #include "UI.h"
+#include "IResource.h"
 
 class Game {
 public:
-    Game(sf::RenderWindow& window, const sf::View& view);
+    Game(sf::RenderWindow& window, const sf::View& view, IResource& resource);
 
     void handleMainMenu(const sf::Event& event);
     void handlePauseMenu(const sf::Event& event);
     void handlePlayingState(const sf::Event& event);
     void handleGameOverState(const sf::Event& event);
     void initializeElements();
-    void tick();
     void draw();
     void handleEvent(const sf::Event& event);
 
@@ -36,7 +36,7 @@ private:
     Grid grid;
     PlayerType currentPlayer;
     PlayerType winner;
-    std::unique_ptr<IAI> ai; // Use unique_ptr to the IAI interface
+    std::unique_ptr<IAI> ai;
 
     UI ui;
 

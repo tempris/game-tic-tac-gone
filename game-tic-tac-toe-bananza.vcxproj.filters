@@ -88,5 +88,11 @@
     <ClInclude Include="src\IButton.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\IPlayer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IResource.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

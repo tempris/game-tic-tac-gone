@@ -2,9 +2,9 @@
 #include "Resource.h"
 #include "AI.h"
 
-Game::Game(sf::RenderWindow& window, const sf::View& view)
+Game::Game(sf::RenderWindow& window, const sf::View& view, IResource& resource)
     : window(window), view(view), ai(std::make_unique<AI>(PlayerType::Player2, PlayerType::Player1)),
-    ui(window, Resource::getInstance().getFont()),
+    ui(window, resource.getFont()),
     state(GameState::MainMenu)
 {
     currentPlayer = PlayerType::Player1;
@@ -107,10 +107,6 @@ void Game::handleGameOverState(const sf::Event& event) {
     if (ui.isMainMenuButtonClicked()) {
         state = GameState::MainMenu;
     }
-}
-
-void Game::tick() {
-    // No event polling here, handled by Window
 }
 
 void Game::draw() {

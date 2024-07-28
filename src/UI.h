@@ -4,7 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include "IButton.h"
 #include "Shared.h"
-#include <memory>
 
 class UI {
 public:

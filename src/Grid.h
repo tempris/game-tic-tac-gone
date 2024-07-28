@@ -2,7 +2,7 @@
 #define GRID_H
 
 #include "Shared.h"
-#include "Player.h"
+#include "IPlayer.h"
 #include <SFML/Graphics.hpp>
 
 class Grid {

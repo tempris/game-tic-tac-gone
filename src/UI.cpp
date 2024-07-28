@@ -2,7 +2,6 @@
 #include "Button.h"
 #include "Resource.h"
 
-// Correct initialization of buttons using make_unique
 UI::UI(sf::RenderWindow& window, sf::Font& font)
     : window(window),
     startButton(std::make_unique<Button>(0, 0, 200, 50, font, "Start Game")),

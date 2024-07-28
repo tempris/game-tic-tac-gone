@@ -1,13 +1,13 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Shared.h"
+#include "IPlayer.h"
 
-class Player {
+class Player : public IPlayer {
 public:
     Player(PlayerType type) : type(type) {}
 
-    PlayerType getType() const {
+    PlayerType getType() const override {
         return type;
     }
 
