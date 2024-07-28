@@ -1,4 +1,5 @@
 #include "AI.h"
+#include "IAI.h"
 #include <algorithm>
 
 AI::AI(PlayerType aiPlayer, PlayerType humanPlayer)

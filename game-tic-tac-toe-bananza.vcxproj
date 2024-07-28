@@ -148,6 +148,8 @@
   <ItemGroup>
     <ClInclude Include="src\AI.h" />
     <ClInclude Include="src\Button.h" />
+    <ClInclude Include="src\IAI.h" />
+    <ClInclude Include="src\IButton.h" />
     <ClInclude Include="src\Shared.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Grid.h" />

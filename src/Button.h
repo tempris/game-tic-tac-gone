@@ -3,18 +3,19 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
+#include "IButton.h"
 
-class Button {
+class Button : public IButton {
 public:
     Button(float x, float y, float width, float height, sf::Font& font, const std::string& text);
 
-    void update(const sf::Vector2i& mousePos, const sf::Event& event);
-    void draw(sf::RenderWindow& window);
-    bool isClicked();
+    void update(const sf::Vector2i& mousePos, const sf::Event& event) override;
+    void draw(sf::RenderWindow& window) override;
+    bool isClicked() override;
     float getWidth() const;
     float getHeight() const;
-    void setPosition(float x, float y);
-    void center(float windowWidth, float windowHeight, float yOffset);
+    void setPosition(float x, float y) override;
+    void center(float windowWidth, float windowHeight, float yOffset) override;
 
 private:
     sf::RectangleShape button;

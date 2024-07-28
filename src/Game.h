@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Grid.h"
 #include "Player.h"
-#include "AI.h"
+#include "IAI.h"
 #include "Shared.h"
 #include "UI.h"
 
@@ -36,7 +36,7 @@ private:
     Grid grid;
     PlayerType currentPlayer;
     PlayerType winner;
-    AI ai;
+    std::unique_ptr<IAI> ai; // Use unique_ptr to the IAI interface
 
     UI ui;
 

@@ -1,8 +1,9 @@
 #include "Game.h"
 #include "Resource.h"
+#include "AI.h"
 
 Game::Game(sf::RenderWindow& window, const sf::View& view)
-    : window(window), view(view), ai(PlayerType::Player2, PlayerType::Player1),
+    : window(window), view(view), ai(std::make_unique<AI>(PlayerType::Player2, PlayerType::Player1)),
     ui(window, Resource::getInstance().getFont()),
     state(GameState::MainMenu)
 {
@@ -83,7 +84,7 @@ void Game::handlePlayingState(const sf::Event& event) {
     }
 
     if (currentPlayer == PlayerType::Player2) {
-        ai.makeMove(grid);
+        ai->makeMove(grid);
         if (grid.checkWin(PlayerType::Player2)) {
             winner = PlayerType::Player2;
             state = GameState::GameOver;

@@ -2,8 +2,9 @@
 #define UI_H
 
 #include <SFML/Graphics.hpp>
-#include "Button.h"
+#include "IButton.h"
 #include "Shared.h"
+#include <memory>
 
 class UI {
 public:
@@ -26,11 +27,11 @@ public:
 private:
     sf::RenderWindow& window;
 
-    Button startButton;
-    Button quitButton;
-    Button doNothingButton;
-    Button resumeButton;
-    Button mainMenuButton;
+    std::unique_ptr<IButton> startButton;
+    std::unique_ptr<IButton> quitButton;
+    std::unique_ptr<IButton> doNothingButton;
+    std::unique_ptr<IButton> resumeButton;
+    std::unique_ptr<IButton> mainMenuButton;
 };
 
 #endif // UI_H

@@ -82,5 +82,11 @@
     <ClInclude Include="src\UI.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\IAI.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IButton.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
