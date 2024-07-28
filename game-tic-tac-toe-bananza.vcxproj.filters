@@ -94,5 +94,8 @@
     <ClInclude Include="src\IResource.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\IGrid.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@
 class IAI {
 public:
     virtual ~IAI() = default;
-    virtual void makeMove(Grid& grid) = 0;
+    virtual void makeMove(IGrid& grid) = 0;
 };
 
 #endif // IAI_H

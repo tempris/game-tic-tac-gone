@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include <SFML/Graphics.hpp>
-#include "Grid.h"
+#include "IGrid.h"
 #include "Player.h"
 #include "IAI.h"
 #include "Shared.h"
@@ -18,6 +18,7 @@ public:
     void handlePlayingState(const sf::Event& event);
     void handleGameOverState(const sf::Event& event);
     void initializeElements();
+    void tick();
     void draw();
     void handleEvent(const sf::Event& event);
 
@@ -33,7 +34,7 @@ public:
 private:
     sf::RenderWindow& window;
     sf::View view;
-    Grid grid;
+    std::unique_ptr<IGrid> grid;
     PlayerType currentPlayer;
     PlayerType winner;
     std::unique_ptr<IAI> ai;

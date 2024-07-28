@@ -150,6 +150,7 @@
     <ClInclude Include="src\Button.h" />
     <ClInclude Include="src\IAI.h" />
     <ClInclude Include="src\IButton.h" />
+    <ClInclude Include="src\IGrid.h" />
     <ClInclude Include="src\IPlayer.h" />
     <ClInclude Include="src\IResource.h" />
     <ClInclude Include="src\Shared.h" />

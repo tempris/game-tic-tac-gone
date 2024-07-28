@@ -5,31 +5,28 @@
 AI::AI(PlayerType aiPlayer, PlayerType humanPlayer)
     : aiPlayer(aiPlayer), humanPlayer(humanPlayer) {}
 
-void AI::makeMove(Grid& grid) {
-    int bestVal = std::numeric_limits<int>::min();
-    int bestMoveRow = -1;
-    int bestMoveCol = -1;
-
-    for (int i = 0; i < gridSize; ++i) {
-        for (int j = 0; j < gridSize; ++j) {
-            if (grid.isCellEmpty(i, j)) {
-                grid.setCell(i, j, aiPlayer);
-                int moveVal = minimax(grid, 0, false);
-                grid.setCell(i, j, PlayerType::None);
-
-                if (moveVal > bestVal) {
-                    bestMoveRow = i;
-                    bestMoveCol = j;
-                    bestVal = moveVal;
+void AI::makeMove(IGrid& grid) { // Change Grid& to IGrid&
+    int bestMove = -1;
+    int bestValue = -1000;
+    for (int row = 0; row < gridSize; ++row) {
+        for (int col = 0; col < gridSize; ++col) {
+            if (grid.isCellEmpty(row, col)) {
+                grid.setCell(row, col, aiPlayer);
+                int moveValue = minimax(grid, 0, false);
+                grid.setCell(row, col, PlayerType::None);
+                if (moveValue > bestValue) {
+                    bestMove = row * gridSize + col;
+                    bestValue = moveValue;
                 }
             }
         }
     }
-
-    grid.setCell(bestMoveRow, bestMoveCol, aiPlayer);
+    if (bestMove != -1) {
+        grid.setCell(bestMove / gridSize, bestMove % gridSize, aiPlayer);
+    }
 }
 
-int AI::minimax(Grid& grid, int depth, bool isMaximizing) {
+int AI::minimax(IGrid& grid, int depth, bool isMaximizing) {
     int score = evaluateGrid(grid);
 
     if (score == 10)
@@ -69,7 +66,7 @@ int AI::minimax(Grid& grid, int depth, bool isMaximizing) {
     }
 }
 
-int AI::evaluateGrid(const Grid& grid) {
+int AI::evaluateGrid(const IGrid& grid) {
     if (grid.checkWin(aiPlayer))
         return 10;
     if (grid.checkWin(humanPlayer))
@@ -77,6 +74,6 @@ int AI::evaluateGrid(const Grid& grid) {
     return 0;
 }
 
-bool AI::isMovesLeft(const Grid& grid) {
+bool AI::isMovesLeft(const IGrid& grid) {
     return !grid.isFull();
 }

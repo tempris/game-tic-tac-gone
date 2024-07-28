@@ -2,22 +2,22 @@
 #define AI_H
 
 #include "IAI.h"
-#include "Grid.h"
+#include "IGrid.h"
 #include "Player.h"
 #include "Shared.h"
 
 class AI : public IAI {
 public:
     AI(PlayerType aiPlayer, PlayerType humanPlayer);
-    void makeMove(Grid& grid) override;
+    void makeMove(IGrid& grid) override;
 
 private:
     PlayerType aiPlayer;
     PlayerType humanPlayer;
 
-    int minimax(Grid& grid, int depth, bool isMaximizing);
-    int evaluateGrid(const Grid& grid);
-    bool isMovesLeft(const Grid& grid);
+    int minimax(IGrid& grid, int depth, bool isMaximizing);
+    int evaluateGrid(const IGrid& grid);
+    bool isMovesLeft(const IGrid& grid);
 };
 
 #endif // AI_H
