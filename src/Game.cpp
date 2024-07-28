@@ -1,7 +1,7 @@
-#include "GameStateManager.h"
+#include "Game.h"
 #include "ResourceManager.h"
 
-GameStateManager::GameStateManager(sf::RenderWindow& window, const sf::View& view)
+Game::Game(sf::RenderWindow& window, const sf::View& view)
     : window(window), view(view), ai(PlayerType::Player2, PlayerType::Player1),
     startButton(0, 0, 200, 50, ResourceManager::getInstance().getFont(), "Start Game"),
     quitButton(0, 0, 200, 50, ResourceManager::getInstance().getFont(), "Quit"),
@@ -15,7 +15,7 @@ GameStateManager::GameStateManager(sf::RenderWindow& window, const sf::View& vie
     initializeElements();
 }
 
-void GameStateManager::initializeElements() {
+void Game::initializeElements() {
     grid.updateSize(window.getSize().x, window.getSize().y);
     startButton.center(window.getSize().x, window.getSize().y, -100);
     quitButton.center(window.getSize().x, window.getSize().y, 0);
@@ -24,7 +24,7 @@ void GameStateManager::initializeElements() {
     mainMenuButton.center(window.getSize().x, window.getSize().y, 50);
 }
 
-void GameStateManager::handleMainMenu(const sf::Event& event) {
+void Game::handleMainMenu(const sf::Event& event) {
     if (event.type == sf::Event::Closed) {
         window.close();
     }
@@ -49,7 +49,7 @@ void GameStateManager::handleMainMenu(const sf::Event& event) {
     }
 }
 
-void GameStateManager::handlePauseMenu(const sf::Event& event) {
+void Game::handlePauseMenu(const sf::Event& event) {
     if (event.type == sf::Event::Closed) {
         window.close();
     }
@@ -66,7 +66,7 @@ void GameStateManager::handlePauseMenu(const sf::Event& event) {
     }
 }
 
-void GameStateManager::handlePlayingState(const sf::Event& event) {
+void Game::handlePlayingState(const sf::Event& event) {
     if (event.type == sf::Event::Closed) {
         window.close();
     }
@@ -107,7 +107,7 @@ void GameStateManager::handlePlayingState(const sf::Event& event) {
     }
 }
 
-void GameStateManager::handleGameOverState(const sf::Event& event) {
+void Game::handleGameOverState(const sf::Event& event) {
     if (event.type == sf::Event::Closed) {
         window.close();
     }
@@ -119,11 +119,11 @@ void GameStateManager::handleGameOverState(const sf::Event& event) {
     }
 }
 
-void GameStateManager::tick() {
+void Game::tick() {
     // No event polling here, handled by Window
 }
 
-void GameStateManager::draw() {
+void Game::draw() {
     switch (state) {
     case GameState::MainMenu:
         startButton.draw(window);
@@ -155,7 +155,7 @@ void GameStateManager::draw() {
     }
 }
 
-void GameStateManager::handleEvent(const sf::Event& event) {
+void Game::handleEvent(const sf::Event& event) {
     switch (state) {
     case GameState::MainMenu:
         handleMainMenu(event);
@@ -172,6 +172,6 @@ void GameStateManager::handleEvent(const sf::Event& event) {
     }
 }
 
-GameStateManager::GameState GameStateManager::getState() const {
+Game::GameState Game::getState() const {
     return state;
 }

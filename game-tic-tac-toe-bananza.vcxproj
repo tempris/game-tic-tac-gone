@@ -138,7 +138,7 @@
   <ItemGroup>
     <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\button.cpp" />
-    <ClCompile Include="src\GameStateManager.cpp" />
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Grid.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
@@ -148,7 +148,7 @@
     <ClInclude Include="src\AI.h" />
     <ClInclude Include="src\Button.h" />
     <ClInclude Include="src\Shared.h" />
-    <ClInclude Include="src\GameStateManager.h" />
+    <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Grid.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\Player.h" />

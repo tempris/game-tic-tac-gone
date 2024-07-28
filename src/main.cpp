@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "GameStateManager.h"
+#include "Game.h"
 #include "ResourceManager.h"
 #include "Window.h"
 
@@ -10,20 +10,20 @@ int main() {
     // Initialize the ResourceManager to load the font
     ResourceManager::getInstance();
 
-    GameStateManager gameStateManager(window.getRenderWindow(), window.getRenderWindow().getView());
+    Game game(window.getRenderWindow(), window.getRenderWindow().getView());
 
-    window.onResize([&gameStateManager]() {
-        gameStateManager.initializeElements();
+    window.onResize([&game]() {
+        game.initializeElements();
         });
 
-    window.onEvent([&gameStateManager](const sf::Event& event) {
-        gameStateManager.handleEvent(event);
+    window.onEvent([&game](const sf::Event& event) {
+        game.handleEvent(event);
         });
 
     while (window.isOpen()) {
         window.handleEvents();
         window.clear();
-        gameStateManager.draw();
+        game.draw();
         window.display();
     }
 

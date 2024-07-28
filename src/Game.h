@@ -8,9 +8,9 @@
 #include "AI.h"
 #include "Shared.h"
 
-class GameStateManager {
+class Game {
 public:
-    GameStateManager(sf::RenderWindow& window, const sf::View& view);
+    Game(sf::RenderWindow& window, const sf::View& view);
 
     void handleMainMenu(const sf::Event& event);
     void handlePauseMenu(const sf::Event& event);
