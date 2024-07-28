@@ -18,7 +18,7 @@ Button::Button(float x, float y, float width, float height, sf::Font& font, cons
     this->text.setPosition(x + width / 2.0f, y + height / 2.0f);
 }
 
-void Button::update(const sf::Vector2i& mousePos, sf::Event& event) {
+void Button::update(const sf::Vector2i& mousePos, const sf::Event& event) {
     if (button.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
         button.setFillColor(sf::Color(200, 200, 200)); // Hover color
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -60,10 +60,4 @@ void Button::setPosition(float x, float y) {
 
 void Button::center(float windowWidth, float windowHeight, float yOffset) {
     setPosition((windowWidth - getWidth()) / 2.0f, (windowHeight - getHeight()) / 2.0f + yOffset);
-}
-
-void updateView(sf::RenderWindow& window, sf::View& view) {
-    view.setSize(window.getSize().x, window.getSize().y);
-    view.setCenter(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
-    window.setView(view);
 }

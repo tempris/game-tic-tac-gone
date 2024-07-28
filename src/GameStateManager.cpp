@@ -1,7 +1,7 @@
 #include "GameStateManager.h"
 #include "ResourceManager.h"
 
-GameStateManager::GameStateManager(sf::RenderWindow& window, sf::View& view)
+GameStateManager::GameStateManager(sf::RenderWindow& window, const sf::View& view)
     : window(window), view(view), ai(PlayerType::Player2, PlayerType::Player1),
     startButton(0, 0, 200, 50, ResourceManager::getInstance().getFont(), "Start Game"),
     quitButton(0, 0, 200, 50, ResourceManager::getInstance().getFont(), "Quit"),
@@ -16,7 +16,6 @@ GameStateManager::GameStateManager(sf::RenderWindow& window, sf::View& view)
 }
 
 void GameStateManager::initializeElements() {
-    updateView(window, view);
     grid.updateSize(window.getSize().x, window.getSize().y);
     startButton.center(window.getSize().x, window.getSize().y, -100);
     quitButton.center(window.getSize().x, window.getSize().y, 0);
@@ -25,99 +24,70 @@ void GameStateManager::initializeElements() {
     mainMenuButton.center(window.getSize().x, window.getSize().y, 50);
 }
 
-void GameStateManager::handleMainMenu() {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
-            window.close();
-
-        if (event.type == sf::Event::Resized) {
-            initializeElements();
-        }
-
-        startButton.update(sf::Mouse::getPosition(window), event);
-        quitButton.update(sf::Mouse::getPosition(window), event);
-        doNothingButton.update(sf::Mouse::getPosition(window), event);
-
-        if (startButton.isClicked()) {
-            grid.initialize();
-            currentPlayer = PlayerType::Player1;
-            winner = PlayerType::None;
-            state = GameState::Playing;
-        }
-
-        if (quitButton.isClicked()) {
-            window.close();
-        }
-
-        if (doNothingButton.isClicked()) {
-            // Do nothing
-        }
+void GameStateManager::handleMainMenu(const sf::Event& event) {
+    if (event.type == sf::Event::Closed) {
+        window.close();
     }
 
-    window.clear();
-    startButton.draw(window);
-    quitButton.draw(window);
-    doNothingButton.draw(window);
-    window.display();
-}
+    startButton.update(sf::Mouse::getPosition(window), event);
+    quitButton.update(sf::Mouse::getPosition(window), event);
+    doNothingButton.update(sf::Mouse::getPosition(window), event);
 
-void GameStateManager::handlePauseMenu() {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
-            window.close();
-
-        if (event.type == sf::Event::Resized) {
-            initializeElements();
-        }
-
-        resumeButton.update(sf::Mouse::getPosition(window), event);
-        mainMenuButton.update(sf::Mouse::getPosition(window), event);
-
-        if (resumeButton.isClicked()) {
-            state = GameState::Playing;
-        }
-
-        if (mainMenuButton.isClicked()) {
-            state = GameState::MainMenu;
-        }
+    if (startButton.isClicked()) {
+        grid.initialize();
+        currentPlayer = PlayerType::Player1;
+        winner = PlayerType::None;
+        state = GameState::Playing;
     }
 
-    window.clear();
-    resumeButton.draw(window);
-    mainMenuButton.draw(window);
-    window.display();
+    if (quitButton.isClicked()) {
+        window.close();
+    }
+
+    if (doNothingButton.isClicked()) {
+        // Do nothing
+    }
 }
 
-void GameStateManager::handlePlayingState() {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
-            window.close();
+void GameStateManager::handlePauseMenu(const sf::Event& event) {
+    if (event.type == sf::Event::Closed) {
+        window.close();
+    }
 
-        if (event.type == sf::Event::Resized) {
-            initializeElements();
-        }
+    resumeButton.update(sf::Mouse::getPosition(window), event);
+    mainMenuButton.update(sf::Mouse::getPosition(window), event);
 
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-            state = GameState::Paused;
-        }
+    if (resumeButton.isClicked()) {
+        state = GameState::Playing;
+    }
 
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-            if (currentPlayer == PlayerType::Player1) {
-                if (grid.handleClick(event.mouseButton.x, event.mouseButton.y, currentPlayer)) {
-                    if (grid.checkWin(PlayerType::Player1)) {
-                        winner = PlayerType::Player1;
-                        state = GameState::GameOver;
-                    }
-                    else if (grid.isFull()) {
-                        winner = PlayerType::None;
-                        state = GameState::GameOver;
-                    }
-                    else {
-                        currentPlayer = PlayerType::Player2;
-                    }
+    if (mainMenuButton.isClicked()) {
+        state = GameState::MainMenu;
+    }
+}
+
+void GameStateManager::handlePlayingState(const sf::Event& event) {
+    if (event.type == sf::Event::Closed) {
+        window.close();
+    }
+
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+        state = GameState::Paused;
+    }
+
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+        if (currentPlayer == PlayerType::Player1) {
+            if (grid.handleClick(event.mouseButton.x, event.mouseButton.y, currentPlayer)) {
+                if (grid.checkWin(PlayerType::Player1)) {
+                    winner = PlayerType::Player1;
+                    state = GameState::GameOver;
+                }
+                else if (grid.isFull()) {
+                    winner = PlayerType::None;
+                    state = GameState::GameOver;
+                }
+                else {
+                    currentPlayer = PlayerType::Player2;
                 }
             }
         }
@@ -135,62 +105,73 @@ void GameStateManager::handlePlayingState() {
         }
         currentPlayer = PlayerType::Player1;
     }
-
-    window.clear();
-    grid.draw(window, ResourceManager::getInstance().getFont());
-    window.display();
 }
 
-void GameStateManager::handleGameOverState() {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
-            window.close();
-
-        if (event.type == sf::Event::Resized) {
-            initializeElements();
-        }
-
-        mainMenuButton.update(sf::Mouse::getPosition(window), event);
-
-        if (mainMenuButton.isClicked()) {
-            state = GameState::MainMenu;
-        }
+void GameStateManager::handleGameOverState(const sf::Event& event) {
+    if (event.type == sf::Event::Closed) {
+        window.close();
     }
 
-    window.clear();
+    mainMenuButton.update(sf::Mouse::getPosition(window), event);
 
-    sf::Text winText;
-    winText.setFont(ResourceManager::getInstance().getFont());
-    winText.setCharacterSize(50);
-    winText.setFillColor(sf::Color::White);
-    if (winner == PlayerType::None) {
-        winText.setString("Tie Game!");
+    if (mainMenuButton.isClicked()) {
+        state = GameState::MainMenu;
     }
-    else {
-        winText.setString(winner == PlayerType::Player1 ? "Player 1 Wins!" : "Player 2 Wins!");
-    }
-    winText.setPosition((window.getSize().x - winText.getLocalBounds().width) / 2.0f, 100);
-    window.draw(winText);
-
-    mainMenuButton.draw(window);
-
-    window.display();
 }
 
 void GameStateManager::tick() {
+    // No event polling here, handled by Window
+}
+
+void GameStateManager::draw() {
     switch (state) {
     case GameState::MainMenu:
-        handleMainMenu();
+        startButton.draw(window);
+        quitButton.draw(window);
+        doNothingButton.draw(window);
         break;
     case GameState::Playing:
-        handlePlayingState();
+        grid.draw(window, ResourceManager::getInstance().getFont());
         break;
     case GameState::Paused:
-        handlePauseMenu();
+        resumeButton.draw(window);
+        mainMenuButton.draw(window);
         break;
     case GameState::GameOver:
-        handleGameOverState();
+        sf::Text winText;
+        winText.setFont(ResourceManager::getInstance().getFont());
+        winText.setCharacterSize(50);
+        winText.setFillColor(sf::Color::White);
+        if (winner == PlayerType::None) {
+            winText.setString("Tie Game!");
+        }
+        else {
+            winText.setString(winner == PlayerType::Player1 ? "Player 1 Wins!" : "Player 2 Wins!");
+        }
+        winText.setPosition((window.getSize().x - winText.getLocalBounds().width) / 2.0f, 100);
+        window.draw(winText);
+        mainMenuButton.draw(window);
         break;
     }
+}
+
+void GameStateManager::handleEvent(const sf::Event& event) {
+    switch (state) {
+    case GameState::MainMenu:
+        handleMainMenu(event);
+        break;
+    case GameState::Playing:
+        handlePlayingState(event);
+        break;
+    case GameState::Paused:
+        handlePauseMenu(event);
+        break;
+    case GameState::GameOver:
+        handleGameOverState(event);
+        break;
+    }
+}
+
+GameStateManager::GameState GameStateManager::getState() const {
+    return state;
 }

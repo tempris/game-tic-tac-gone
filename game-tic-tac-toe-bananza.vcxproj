@@ -142,6 +142,7 @@
     <ClCompile Include="src\Grid.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
+    <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="src\Grid.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

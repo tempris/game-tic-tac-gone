@@ -10,18 +10,29 @@
 
 class GameStateManager {
 public:
-    GameStateManager(sf::RenderWindow& window, sf::View& view);
+    GameStateManager(sf::RenderWindow& window, const sf::View& view);
 
-    void handleMainMenu();
-    void handlePauseMenu();
-    void handlePlayingState();
-    void handleGameOverState();
+    void handleMainMenu(const sf::Event& event);
+    void handlePauseMenu(const sf::Event& event);
+    void handlePlayingState(const sf::Event& event);
+    void handleGameOverState(const sf::Event& event);
     void initializeElements();
     void tick();
+    void draw();
+    void handleEvent(const sf::Event& event);
+
+    enum class GameState {
+        MainMenu,
+        Playing,
+        Paused,
+        GameOver
+    };
+
+    GameState getState() const;
 
 private:
     sf::RenderWindow& window;
-    sf::View& view;
+    sf::View view;
     Grid grid;
     PlayerType currentPlayer;
     PlayerType winner;
@@ -32,13 +43,6 @@ private:
     Button doNothingButton;
     Button resumeButton;
     Button mainMenuButton;
-
-    enum class GameState {
-        MainMenu,
-        Playing,
-        Paused,
-        GameOver
-    };
 
     GameState state;
 };
