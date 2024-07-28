@@ -1,6 +1,7 @@
 #include "UI.h"
 #include "Button.h"
 #include "Resource.h"
+#include <iostream>
 
 UI::UI(sf::RenderWindow& window, sf::Font& font)
     : window(window),
@@ -12,11 +13,16 @@ UI::UI(sf::RenderWindow& window, sf::Font& font)
 }
 
 void UI::initializeElements() { // TODO: Separate like done in Game
-    startButton->center(window.getSize().x, window.getSize().y, -100);
-    quitButton->center(window.getSize().x, window.getSize().y, 0);
-    doNothingButton->center(window.getSize().x, window.getSize().y, 100);
-    resumeButton->center(window.getSize().x, window.getSize().y, -50);
-    mainMenuButton->center(window.getSize().x, window.getSize().y, 50);
+    try {
+        startButton->center(window.getSize().x, window.getSize().y, -100);
+        quitButton->center(window.getSize().x, window.getSize().y, 0);
+        doNothingButton->center(window.getSize().x, window.getSize().y, 100);
+        resumeButton->center(window.getSize().x, window.getSize().y, -50);
+        mainMenuButton->center(window.getSize().x, window.getSize().y, 50);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Failed to initialize UI elements: " << e.what() << std::endl;
+    }
 }
 
 void UI::handleMainMenu(const sf::Event& event) {

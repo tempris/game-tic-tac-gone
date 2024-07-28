@@ -1,4 +1,5 @@
 #include "AI.h"
+#include <iostream>
 
 AI::AI(PlayerType aiPlayer, PlayerType humanPlayer)
     : aiPlayer(aiPlayer), humanPlayer(humanPlayer) {}
@@ -20,7 +21,13 @@ void AI::makeMove(IGrid& grid) {
         }
     }
     if (bestMove != -1) {
-        grid.setCell(bestMove / gridSize, bestMove % gridSize, aiPlayer);
+        int row = bestMove / gridSize;
+        int col = bestMove % gridSize;
+        if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+            std::cerr << "AI move out of bounds (" << row << ", " << col << ")" << std::endl;
+            return;
+        }
+        grid.setCell(row, col, aiPlayer);
     }
 }
 

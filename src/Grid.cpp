@@ -1,18 +1,31 @@
 #include "Grid.h"
+#include <iostream>
 
 Grid::Grid() {
     initialize();
 }
 
 bool Grid::isCellEmpty(int row, int col) const {
+    if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+        std::cerr << "Invalid cell position (" << row << ", " << col << ")" << std::endl;
+        return false;
+    }
     return cells[row][col] == PlayerType::None;
 }
 
 void Grid::setCell(int row, int col, PlayerType player) {
+    if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+        std::cerr << "Invalid cell position (" << row << ", " << col << ")" << std::endl;
+        return;
+    }
     cells[row][col] = player;
 }
 
 PlayerType Grid::getCell(int row, int col) const {
+    if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+        std::cerr << "Invalid cell position (" << row << ", " << col << ")" << std::endl;
+        return PlayerType::None;
+    }
     return cells[row][col];
 }
 
@@ -50,11 +63,16 @@ void Grid::initialize() {
 }
 
 bool Grid::handleClick(int x, int y, PlayerType& currentPlayer) {
-    int row = static_cast<int>((y - offsetY) / cellSize);
-    int col = static_cast<int>((x - offsetX) / cellSize);
-    if (row >= 0 && row < gridSize && col >= 0 && col < gridSize && isCellEmpty(row, col)) {
+    int col = (x - offsetX) / cellSize;
+    int row = (y - offsetY) / cellSize;
+
+    if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+        std::cerr << "Click out of bounds (" << x << ", " << y << ")" << std::endl;
+        return false;
+    }
+
+    if (isCellEmpty(row, col)) {
         setCell(row, col, currentPlayer);
-        currentPlayer = (currentPlayer == PlayerType::Player1) ? PlayerType::Player2 : PlayerType::Player1;
         return true;
     }
     return false;
