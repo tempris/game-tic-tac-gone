@@ -137,11 +137,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AI.cpp" />
-    <ClCompile Include="src\button.cpp" />
+    <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Grid.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Resource.cpp" />
+    <ClCompile Include="src\UI.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="src\Grid.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\UI.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

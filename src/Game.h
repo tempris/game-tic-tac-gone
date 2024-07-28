@@ -1,12 +1,12 @@
-#ifndef GAME_STATE_MANAGER_H
-#define GAME_STATE_MANAGER_H
+#ifndef GAME_H
+#define GAME_H
 
 #include <SFML/Graphics.hpp>
-#include "Button.h"
 #include "Grid.h"
 #include "Player.h"
 #include "AI.h"
 #include "Shared.h"
+#include "UI.h"
 
 class Game {
 public:
@@ -38,13 +38,9 @@ private:
     PlayerType winner;
     AI ai;
 
-    Button startButton;
-    Button quitButton;
-    Button doNothingButton;
-    Button resumeButton;
-    Button mainMenuButton;
+    UI ui;
 
     GameState state;
 };
 
-#endif // GAME_STATE_MANAGER_H
+#endif // GAME_H
