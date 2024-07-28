@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "Resource.h"
 #include "Window.h"
+#include "Grid.h"
+#include "AI.h"
 
 int main() {
     Window window("Tic-Tac-Toe-Bananza", 800, 600);
@@ -9,10 +11,15 @@ int main() {
     // Initialize the Resource to load the font
     Resource& resource = Resource::getInstance();
 
-    Game game(window.getRenderWindow(), window.getRenderWindow().getView(), resource);
+    // Create the grid and AI instances
+    std::unique_ptr<IGrid> grid = std::make_unique<Grid>();
+    std::unique_ptr<IAI> ai = std::make_unique<AI>(PlayerType::Player2, PlayerType::Player1);
+
+    // Pass these instances to the Game constructor
+    Game game(window.getRenderWindow(), window.getRenderWindow().getView(), std::move(grid), std::move(ai), resource);
 
     window.onResize([&game]() {
-        game.initializeElements();
+        game.resizeElements();
     });
 
     window.onEvent([&game](const sf::Event& event) {

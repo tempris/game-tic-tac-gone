@@ -4,7 +4,6 @@
 #include "IAI.h"
 #include "IGrid.h"
 #include "Player.h"
-#include "Shared.h"
 
 class AI : public IAI {
 public:

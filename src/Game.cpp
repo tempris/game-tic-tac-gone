@@ -1,11 +1,11 @@
 #include "Game.h"
 #include "Resource.h"
-#include "AI.h"
 #include "Grid.h"
+#include "AI.h"
 
-Game::Game(sf::RenderWindow& window, const sf::View& view, IResource& resource)
-    : window(window), view(view), grid(std::make_unique<Grid>()),
-    ai(std::make_unique<AI>(PlayerType::Player2, PlayerType::Player1)),
+Game::Game(sf::RenderWindow& window, const sf::View& view, std::unique_ptr<IGrid> grid, std::unique_ptr<IAI> ai, IResource& resource)
+    : window(window), view(view), grid(std::move(grid)),
+    ai(std::move(ai)),
     ui(window, resource.getFont()),
     state(GameState::MainMenu)
 {
@@ -14,10 +14,14 @@ Game::Game(sf::RenderWindow& window, const sf::View& view, IResource& resource)
     initializeElements();
 }
 
-void Game::initializeElements() {
-    grid->updateSize(view.getSize().x, view.getSize().y);
-    grid->initialize();
+void Game::resizeElements() {
+    grid->updateSize(window.getSize().x, window.getSize().y);
     ui.initializeElements();
+}
+
+void Game::initializeElements() {
+    grid->initialize();
+    resizeElements();
 }
 
 void Game::handleEvent(const sf::Event& event) {
@@ -93,7 +97,6 @@ void Game::handlePlayingState(const sf::Event& event) {
 }
 
 void Game::draw() {
-    window.setView(view);
     if (state == GameState::MainMenu) {
         ui.drawMainMenu();
     }

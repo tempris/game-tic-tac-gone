@@ -1,11 +1,9 @@
 #include "AI.h"
-#include "IAI.h"
-#include <algorithm>
 
 AI::AI(PlayerType aiPlayer, PlayerType humanPlayer)
     : aiPlayer(aiPlayer), humanPlayer(humanPlayer) {}
 
-void AI::makeMove(IGrid& grid) { // Change Grid& to IGrid&
+void AI::makeMove(IGrid& grid) {
     int bestMove = -1;
     int bestValue = -1000;
     for (int row = 0; row < gridSize; ++row) {

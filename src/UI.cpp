@@ -11,7 +11,7 @@ UI::UI(sf::RenderWindow& window, sf::Font& font)
     mainMenuButton(std::make_unique<Button>(0, 0, 200, 50, font, "Main Menu")) {
 }
 
-void UI::initializeElements() {
+void UI::initializeElements() { // TODO: Separate like done in Game
     startButton->center(window.getSize().x, window.getSize().y, -100);
     quitButton->center(window.getSize().x, window.getSize().y, 0);
     doNothingButton->center(window.getSize().x, window.getSize().y, 100);

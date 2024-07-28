@@ -11,12 +11,13 @@
 
 class Game {
 public:
-    Game(sf::RenderWindow& window, const sf::View& view, IResource& resource);
+    Game(sf::RenderWindow& window, const sf::View& view, std::unique_ptr<IGrid> grid, std::unique_ptr<IAI> ai, IResource& resource);
 
     void handleMainMenu(const sf::Event& event);
     void handlePauseMenu(const sf::Event& event);
     void handlePlayingState(const sf::Event& event);
     void handleGameOverState(const sf::Event& event);
+    void resizeElements();
     void initializeElements();
     void tick();
     void draw();
