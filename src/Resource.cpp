@@ -1,18 +1,18 @@
-#include "ResourceManager.h"
+#include "Resource.h"
 #include <iostream>
 
-ResourceManager::ResourceManager() {
+Resource::Resource() {
     font = std::make_unique<sf::Font>();
     if (!font->loadFromFile("content/font/NotoSans-Regular.ttf")) {
         std::cerr << "Failed to load font!" << std::endl;
     }
 }
 
-ResourceManager& ResourceManager::getInstance() {
-    static ResourceManager instance;
+Resource& Resource::getInstance() {
+    static Resource instance;
     return instance;
 }
 
-sf::Font& ResourceManager::getFont() {
+sf::Font& Resource::getFont() {
     return *font;
 }

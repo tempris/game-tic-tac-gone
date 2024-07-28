@@ -4,15 +4,15 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-class ResourceManager {
+class Resource {
 public:
-    static ResourceManager& getInstance();
+    static Resource& getInstance();
     sf::Font& getFont();
 
 private:
-    ResourceManager();
-    ResourceManager(const ResourceManager&) = delete;
-    ResourceManager& operator=(const ResourceManager&) = delete;
+    Resource();
+    Resource(const Resource&) = delete;
+    Resource& operator=(const Resource&) = delete;
 
     std::unique_ptr<sf::Font> font;
 };

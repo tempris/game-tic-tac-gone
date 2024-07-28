@@ -1,13 +1,13 @@
 #include "Game.h"
-#include "ResourceManager.h"
+#include "Resource.h"
 
 Game::Game(sf::RenderWindow& window, const sf::View& view)
     : window(window), view(view), ai(PlayerType::Player2, PlayerType::Player1),
-    startButton(0, 0, 200, 50, ResourceManager::getInstance().getFont(), "Start Game"),
-    quitButton(0, 0, 200, 50, ResourceManager::getInstance().getFont(), "Quit"),
-    doNothingButton(0, 0, 200, 50, ResourceManager::getInstance().getFont(), "Do Nothing"),
-    resumeButton(0, 0, 200, 50, ResourceManager::getInstance().getFont(), "Resume"),
-    mainMenuButton(0, 0, 200, 50, ResourceManager::getInstance().getFont(), "Main Menu"),
+    startButton(0, 0, 200, 50, Resource::getInstance().getFont(), "Start Game"),
+    quitButton(0, 0, 200, 50, Resource::getInstance().getFont(), "Quit"),
+    doNothingButton(0, 0, 200, 50, Resource::getInstance().getFont(), "Do Nothing"),
+    resumeButton(0, 0, 200, 50, Resource::getInstance().getFont(), "Resume"),
+    mainMenuButton(0, 0, 200, 50, Resource::getInstance().getFont(), "Main Menu"),
     state(GameState::MainMenu)
 {
     currentPlayer = PlayerType::Player1;
@@ -131,7 +131,7 @@ void Game::draw() {
         doNothingButton.draw(window);
         break;
     case GameState::Playing:
-        grid.draw(window, ResourceManager::getInstance().getFont());
+        grid.draw(window, Resource::getInstance().getFont());
         break;
     case GameState::Paused:
         resumeButton.draw(window);
@@ -139,7 +139,7 @@ void Game::draw() {
         break;
     case GameState::GameOver:
         sf::Text winText;
-        winText.setFont(ResourceManager::getInstance().getFont());
+        winText.setFont(Resource::getInstance().getFont());
         winText.setCharacterSize(50);
         winText.setFillColor(sf::Color::White);
         if (winner == PlayerType::None) {

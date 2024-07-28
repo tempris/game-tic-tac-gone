@@ -141,7 +141,7 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Grid.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\ResourceManager.cpp" />
+    <ClCompile Include="src\Resource.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,7 +150,7 @@
     <ClInclude Include="src\Shared.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Grid.h" />
-    <ClInclude Include="src\ResourceManager.h" />
+    <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
