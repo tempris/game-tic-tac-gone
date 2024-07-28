@@ -1,7 +1,7 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include "GameDefinitions.h"
+#include "Shared.h"
 #include "Player.h"
 #include <SFML/Graphics.hpp>
 

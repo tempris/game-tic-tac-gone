@@ -3,7 +3,7 @@
 
 #include "Grid.h"
 #include "Player.h"
-#include "GameDefinitions.h"
+#include "Shared.h"
 
 class AI {
 public:

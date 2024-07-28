@@ -41,6 +41,12 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameStateManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI.h">
@@ -49,13 +55,19 @@
     <ClInclude Include="src\Button.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameDefinitions.h">
+    <ClInclude Include="src\Shared.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Grid.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Player.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameStateManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceManager.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

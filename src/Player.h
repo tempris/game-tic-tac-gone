@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "GameDefinitions.h"
+#include "Shared.h"
 
 class Player {
 public:
