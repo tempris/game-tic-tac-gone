@@ -26,18 +26,34 @@ void UI::initializeElements() { // TODO: Separate like done in Game
 }
 
 void UI::handleMainMenu(const sf::Event& event) {
-    startButton->update(sf::Mouse::getPosition(window), event);
-    quitButton->update(sf::Mouse::getPosition(window), event);
-    doNothingButton->update(sf::Mouse::getPosition(window), event);
+    try {
+        startButton->update(sf::Mouse::getPosition(window), event);
+        quitButton->update(sf::Mouse::getPosition(window), event);
+        doNothingButton->update(sf::Mouse::getPosition(window), event);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error handling main menu event: " << e.what() << std::endl;
+    }
 }
 
+
 void UI::handlePauseMenu(const sf::Event& event) {
-    resumeButton->update(sf::Mouse::getPosition(window), event);
-    mainMenuButton->update(sf::Mouse::getPosition(window), event);
+    try {
+        resumeButton->update(sf::Mouse::getPosition(window), event);
+        mainMenuButton->update(sf::Mouse::getPosition(window), event);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error handling pause menu event: " << e.what() << std::endl;
+    }
 }
 
 void UI::handleGameOverState(const sf::Event& event) {
-    mainMenuButton->update(sf::Mouse::getPosition(window), event);
+    try {
+        mainMenuButton->update(sf::Mouse::getPosition(window), event);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error handling game over state event: " << e.what() << std::endl;
+    }
 }
 
 void UI::drawMainMenu() {
