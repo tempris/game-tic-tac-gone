@@ -26,34 +26,20 @@ Button doNothingButton(0, 0, 200, 50, *(new sf::Font()), "Do Nothing");
 Button resumeButton(0, 0, 200, 50, *(new sf::Font()), "Resume");
 Button mainMenuButton(0, 0, 200, 50, *(new sf::Font()), "Main Menu");
 
-void centerButton(Button& button, float windowWidth, float windowHeight, float yOffset);
 void handleMainMenu(sf::RenderWindow& window, GameState& state, sf::View& view);
 void handlePauseMenu(sf::RenderWindow& window, GameState& state, sf::View& view);
 void handlePlayingState(sf::RenderWindow& window, sf::Font& font, GameState& state, sf::View& view);
 void handleGameOverState(sf::RenderWindow& window, sf::Font& font, GameState& state, sf::View& view);
-void updateView(sf::RenderWindow& window, sf::View& view);
 void initializeElements(sf::RenderWindow& window, sf::View& view);
-
-void centerButton(Button& button, float windowWidth, float windowHeight, float yOffset) {
-    float buttonWidth = button.getWidth();
-    float buttonHeight = button.getHeight();
-    button.setPosition((windowWidth - buttonWidth) / 2.0f, (windowHeight - buttonHeight) / 2.0f + yOffset);
-}
-
-void updateView(sf::RenderWindow& window, sf::View& view) {
-    view.setSize(window.getSize().x, window.getSize().y);
-    view.setCenter(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
-    window.setView(view);
-}
 
 void initializeElements(sf::RenderWindow& window, sf::View& view) {
     updateView(window, view);
     grid.updateSize(window.getSize().x, window.getSize().y);
-    centerButton(startButton, window.getSize().x, window.getSize().y, -100);
-    centerButton(quitButton, window.getSize().x, window.getSize().y, 0);
-    centerButton(doNothingButton, window.getSize().x, window.getSize().y, 100);
-    centerButton(resumeButton, window.getSize().x, window.getSize().y, -50);
-    centerButton(mainMenuButton, window.getSize().x, window.getSize().y, 50);
+    startButton.center(window.getSize().x, window.getSize().y, -100);
+    quitButton.center(window.getSize().x, window.getSize().y, 0);
+    doNothingButton.center(window.getSize().x, window.getSize().y, 100);
+    resumeButton.center(window.getSize().x, window.getSize().y, -50);
+    mainMenuButton.center(window.getSize().x, window.getSize().y, 50);
 }
 
 void handleMainMenu(sf::RenderWindow& window, GameState& state, sf::View& view) {
