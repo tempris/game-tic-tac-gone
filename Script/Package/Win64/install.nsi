@@ -97,7 +97,7 @@ Section "Start Menu Shortcuts" SecShortcutsStart
   SetOutPath "$INSTDIR"
 
   ; Add the start menu shortcuts
-  CreateShortCut "$SMPROGRAMS\${PROJECT_NAME_FULL}\${PROJECT_NAME_FULL}.lnk" "$INSTDIR\${PROJECT_NAME_SHORT}.exe" "" "$INSTDIR\${PROJECT_NAME_SHORT}.exe" 0 SW_SHOWMINIMIZED
+  CreateShortCut "$SMPROGRAMS\${PROJECT_NAME_FULL}\${PROJECT_NAME_FULL}.lnk" "$INSTDIR\${PROJECT_NAME_SHORT}.exe" "" "$INSTDIR\${PROJECT_NAME_SHORT}.exe" 0
   CreateShortCut "$SMPROGRAMS\${PROJECT_NAME_FULL}\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
 SectionEnd
 

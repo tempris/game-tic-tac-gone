@@ -69,7 +69,12 @@ void Game::handleEvent(const sf::Event& event) {
             handlePlayingState(event);
         }
         else if (state == GameState::GameOver) {
-            ui.handleGameOverState(event);
+            if (winner == PlayerType::None) {
+                ui.handleGameOverTieState(event);
+            }
+            else {
+                ui.handleGameOverState(event);
+            }
             if (ui.isMainMenuButtonReleased()) {
                 state = GameState::MainMenu;
             }
