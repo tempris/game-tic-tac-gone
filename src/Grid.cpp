@@ -1,5 +1,6 @@
-#include "Grid.h"
 #include <iostream>
+#include <algorithm>
+#include "Grid.h"
 
 Grid::Grid() {
     initialize();
@@ -59,16 +60,33 @@ bool Grid::isFull() const {
 }
 
 bool Grid::checkWin(PlayerType player) const {
+    winningCells.clear();  // Clear previous winning cells
     for (int i = 0; i < gridSize; ++i) {
-        if (cells[i][0] == player && cells[i][1] == player && cells[i][2] == player)
+        if (cells[i][0] == player && cells[i][1] == player && cells[i][2] == player) {
+            winningCells.push_back({ i, 0 });
+            winningCells.push_back({ i, 1 });
+            winningCells.push_back({ i, 2 });
             return true;
-        if (cells[0][i] == player && cells[1][i] == player && cells[2][i] == player)
+        }
+        if (cells[0][i] == player && cells[1][i] == player && cells[2][i] == player) {
+            winningCells.push_back({ 0, i });
+            winningCells.push_back({ 1, i });
+            winningCells.push_back({ 2, i });
             return true;
+        }
     }
-    if (cells[0][0] == player && cells[1][1] == player && cells[2][2] == player)
+    if (cells[0][0] == player && cells[1][1] == player && cells[2][2] == player) {
+        winningCells.push_back({ 0, 0 });
+        winningCells.push_back({ 1, 1 });
+        winningCells.push_back({ 2, 2 });
         return true;
-    if (cells[0][2] == player && cells[1][1] == player && cells[2][0] == player)
+    }
+    if (cells[0][2] == player && cells[1][1] == player && cells[2][0] == player) {
+        winningCells.push_back({ 0, 2 });
+        winningCells.push_back({ 1, 1 });
+        winningCells.push_back({ 2, 0 });
         return true;
+    }
     return false;
 }
 
@@ -82,11 +100,13 @@ void Grid::initialize() {
     // Clear the move tracking deques for both players
     lastThreeCellsPlayer1.clear();
     lastThreeCellsPlayer2.clear();
+
+    winningCells.clear();  // Clear previous winning cells
 }
 
 bool Grid::handleClick(int x, int y, PlayerType& currentPlayer) {
-    int col = (x - offsetX) / cellSize;
-    int row = (y - offsetY) / cellSize;
+    int col = static_cast<int>((x - offsetX) / cellSize);
+    int row = static_cast<int>((y - offsetY) / cellSize);
 
     if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
         std::cerr << "Click out of bounds (" << x << ", " << y << ")" << std::endl;
@@ -100,7 +120,29 @@ bool Grid::handleClick(int x, int y, PlayerType& currentPlayer) {
     return false;
 }
 
-void Grid::draw(sf::RenderWindow& window, sf::Font& font) const {
+void Grid::draw(sf::RenderWindow& window, sf::Font& font, bool canHover) const {
+    sf::RectangleShape cellBackground(sf::Vector2f(cellSize, cellSize));
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+    for (int i = 0; i < gridSize; ++i) {
+        for (int j = 0; j < gridSize; ++j) {
+            cellBackground.setPosition(offsetX + j * cellSize, offsetY + i * cellSize);
+
+            // Highlight cell if it's part of the winning combination
+            if (std::find(winningCells.begin(), winningCells.end(), std::make_pair(i, j)) != winningCells.end()) {
+                cellBackground.setFillColor(sf::Color(255, 255, 0, 128)); // Light yellow for winning cells
+            }
+            else if (canHover && cellBackground.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+                cellBackground.setFillColor(sf::Color(200, 200, 200, 128)); // Light gray for hover
+            }
+            else {
+                cellBackground.setFillColor(sf::Color(255, 255, 255, 10)); // Transparent
+            }
+
+            window.draw(cellBackground);
+        }
+    }
+
     sf::RectangleShape line(sf::Vector2f(cellSize * gridSize, 8)); // Thicker lines
     line.setFillColor(sf::Color(200, 200, 200)); // Light gray color
     for (int i = 1; i < gridSize; ++i) {

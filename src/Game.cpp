@@ -1,6 +1,9 @@
+#include <iostream>
+#include <SFML/System/Clock.hpp>
 #include "Game.h"
 #include "Resource.h"
-#include <iostream>
+
+static const sf::Time GameOverDelay = sf::seconds(3); // 3 seconds delay
 
 Game::Game(sf::RenderWindow& window, const sf::View& view, std::unique_ptr<IGrid> grid, std::unique_ptr<IAI> ai, IResource& resource)
     : window(window), view(view), grid(std::move(grid)),
@@ -27,20 +30,20 @@ void Game::handleEvent(const sf::Event& event) {
     try {
         if (state == GameState::MainMenu) {
             ui.handleMainMenu(event);
-            if (ui.isStartButtonClicked()) {
+            if (ui.isStartButtonReleased()) {
                 state = GameState::Playing;
                 grid->initialize();
             }
-            if (ui.isQuitButtonClicked()) {
+            if (ui.isQuitButtonReleased()) {
                 window.close();
             }
         }
         else if (state == GameState::Paused) {
             ui.handlePauseMenu(event);
-            if (ui.isResumeButtonClicked()) {
+            if (ui.isResumeButtonReleased()) {
                 state = GameState::Playing;
             }
-            if (ui.isMainMenuButtonClicked()) {
+            if (ui.isMainMenuButtonReleased()) {
                 state = GameState::MainMenu;
             }
         }
@@ -49,7 +52,7 @@ void Game::handleEvent(const sf::Event& event) {
         }
         else if (state == GameState::GameOver) {
             ui.handleGameOverState(event);
-            if (ui.isMainMenuButtonClicked()) {
+            if (ui.isMainMenuButtonReleased()) {
                 state = GameState::MainMenu;
             }
         }
@@ -75,10 +78,12 @@ void Game::handlePlayingState(const sf::Event& event) {
                     if (grid->checkWin(PlayerType::Player1)) {
                         winner = PlayerType::Player1;
                         state = GameState::GameOver;
+                        gameOverClock.restart();
                     }
                     else if (grid->isFull()) {
                         winner = PlayerType::None;
                         state = GameState::GameOver;
+                        gameOverClock.restart();
                     }
                     else {
                         currentPlayer = PlayerType::Player2;
@@ -91,10 +96,12 @@ void Game::handlePlayingState(const sf::Event& event) {
                 if (grid->checkWin(PlayerType::Player2)) {
                     winner = PlayerType::Player2;
                     state = GameState::GameOver;
+                    gameOverClock.restart();
                 }
                 else if (grid->isFull()) {
                     winner = PlayerType::None;
                     state = GameState::GameOver;
+                    gameOverClock.restart();
                 }
                 currentPlayer = PlayerType::Player1;
             }
@@ -116,6 +123,7 @@ void Game::draw() {
         grid->draw(window, Resource::getInstance().getFont());
     }
     else if (state == GameState::GameOver) {
+        grid->draw(window, Resource::getInstance().getFont(), false);  // Keep drawing the grid for a few seconds
         ui.drawGameOverState(winner);
     }
 }

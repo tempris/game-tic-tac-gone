@@ -17,11 +17,10 @@ public:
     void drawPauseMenu();
     void drawGameOverState(PlayerType winner);
 
-    bool isStartButtonClicked();
-    bool isQuitButtonClicked();
-    bool isDoNothingButtonClicked();
-    bool isResumeButtonClicked();
-    bool isMainMenuButtonClicked();
+    bool isStartButtonReleased();
+    bool isQuitButtonReleased();
+    bool isResumeButtonReleased();
+    bool isMainMenuButtonReleased();
 
 private:
     sf::RenderWindow& window;

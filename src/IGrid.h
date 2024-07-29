@@ -14,7 +14,7 @@ public:
     virtual bool checkWin(PlayerType player) const = 0;
     virtual void initialize() = 0;
     virtual bool handleClick(int x, int y, PlayerType& currentPlayer) = 0;
-    virtual void draw(sf::RenderWindow& window, sf::Font& font) const = 0;
+    virtual void draw(sf::RenderWindow& window, sf::Font& font, bool canHover = true) const = 0;
     virtual void updateSize(float windowWidth, float windowHeight) = 0;
 };
 

@@ -1,11 +1,12 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include "IGrid.h"
-#include "Shared.h"
-#include <SFML/Graphics.hpp>
 #include <deque>
 #include <utility>
+#include <vector>
+#include <SFML/Graphics.hpp>
+#include "IGrid.h"
+#include "Shared.h"
 
 class Grid : public IGrid {
 public:
@@ -21,7 +22,7 @@ public:
     bool checkWin(PlayerType player) const override;
     void initialize() override;
     bool handleClick(int x, int y, PlayerType& currentPlayer) override;
-    void draw(sf::RenderWindow& window, sf::Font& font) const override;
+    void draw(sf::RenderWindow& window, sf::Font& font, bool canHover = true) const override;
     void updateSize(float windowWidth, float windowHeight) override;
 
 private:
@@ -29,6 +30,8 @@ private:
     float cellSize;
     float offsetX;
     float offsetY;
+
+    mutable std::vector<std::pair<int, int>> winningCells;
 };
 
 #endif // GRID_H

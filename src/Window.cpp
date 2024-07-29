@@ -1,13 +1,13 @@
 #include "Window.h"
 
 Window::Window(const std::string& title, unsigned int width, unsigned int height)
-    : window(sf::VideoMode(width, height), title), view(sf::FloatRect(0, 0, width, height)) {
+    : window(sf::VideoMode(width, height), title), view(sf::FloatRect(0, 0, static_cast<float>(width), static_cast<float>(height))) {
     window.setView(view);
 }
 
 void Window::updateView() {
-    view.setSize(window.getSize().x, window.getSize().y);
-    view.setCenter(window.getSize().x * 0.5f, window.getSize().y * 0.5f);
+    view.setSize(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y));
+    view.setCenter(static_cast<float>(window.getSize().x) * 0.5f, static_cast<float>(window.getSize().y) * 0.5f);
     window.setView(view);
 }
 

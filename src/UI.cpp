@@ -113,6 +113,15 @@ void UI::drawPauseMenu() {
 }
 
 void UI::drawGameOverState(PlayerType winner) {
+    // Create the background panel
+    sf::RectangleShape backgroundPanel;
+    backgroundPanel.setSize(sf::Vector2f(250.0f, 250.0f));
+    backgroundPanel.setFillColor(sf::Color(0, 0, 0, 150));
+    backgroundPanel.setPosition((window.getSize().x * 0.5f - backgroundPanel.getSize().x * 0.5f), window.getSize().y * 0.5f - backgroundPanel.getSize().y * 0.5f);
+
+    // Draw the background panel
+    window.draw(backgroundPanel);
+
     sf::Text winText;
     winText.setFont(Resource::getInstance().getFont());
     winText.setCharacterSize(50);
@@ -133,18 +142,18 @@ void UI::drawGameOverState(PlayerType winner) {
     mainMenuButton->draw(window);
 }
 
-bool UI::isStartButtonClicked() {
-    return startButton->isClicked();
+bool UI::isStartButtonReleased() {
+    return startButton->isReleased();
 }
 
-bool UI::isQuitButtonClicked() {
-    return quitButton->isClicked();
+bool UI::isQuitButtonReleased() {
+    return quitButton->isReleased();
 }
 
-bool UI::isResumeButtonClicked() {
-    return resumeButton->isClicked();
+bool UI::isResumeButtonReleased() {
+    return resumeButton->isReleased();
 }
 
-bool UI::isMainMenuButtonClicked() {
-    return mainMenuButton->isClicked();
+bool UI::isMainMenuButtonReleased() {
+    return mainMenuButton->isReleased();
 }

@@ -19,15 +19,30 @@ Button::Button(float x, float y, float width, float height, sf::Font& font, cons
 }
 
 void Button::update(const sf::Vector2i& mousePos, const sf::Event& event) {
-    if (button.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
-        button.setFillColor(sf::Color(200, 200, 200)); // Hover color
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+    bool isMouseOver = button.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+        if (isMouseOver) {
             button.setFillColor(sf::Color(150, 150, 150)); // Clicked color
             clicked = true;
+            released = false;
         }
     }
+    else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+        if (isMouseOver && clicked) {
+            released = true; // Only allow released if the button is hovered
+        }
+        clicked = false;
+    }
+
+    if (clicked && isMouseOver) {
+        button.setFillColor(sf::Color(150, 150, 150)); // Clicked color
+    }
+    else if (isMouseOver && !released) {
+        button.setFillColor(sf::Color(200, 200, 200)); // Hover color
+    }
     else {
-        button.setFillColor(sf::Color::White);
+        button.setFillColor(sf::Color::White); // Default color
     }
 }
 
@@ -36,9 +51,9 @@ void Button::draw(sf::RenderWindow& window) {
     window.draw(text);
 }
 
-bool Button::isClicked() {
-    if (clicked) {
-        clicked = false;
+bool Button::isReleased() {
+    if (released) {
+        released = false;
         return true;
     }
     return false;

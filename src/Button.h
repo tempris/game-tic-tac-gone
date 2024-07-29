@@ -11,7 +11,7 @@ public:
 
     void update(const sf::Vector2i& mousePos, const sf::Event& event) override;
     void draw(sf::RenderWindow& window) override;
-    bool isClicked() override;
+    bool isReleased() override;
     float getWidth() const;
     float getHeight() const;
     void setPosition(float x, float y) override;
@@ -21,6 +21,7 @@ private:
     sf::RectangleShape button;
     sf::Text text;
     bool clicked = false;
+    bool released = false;
 };
 
 #endif // BUTTON_H
