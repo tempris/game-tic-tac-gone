@@ -1,5 +1,5 @@
-#include "AI.h"
 #include <iostream>
+#include "AI.h"
 
 AI::AI(PlayerType aiPlayer, PlayerType humanPlayer)
     : aiPlayer(aiPlayer), humanPlayer(humanPlayer) {}

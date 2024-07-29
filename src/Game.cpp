@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 #include <SFML/System/Clock.hpp>
 #include "Game.h"
 #include "Resource.h"
@@ -71,19 +72,17 @@ void Game::handlePlayingState(const sf::Event& event) {
         state = GameState::Paused;
     }
 
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+    if (currentPlayer == PlayerType::Player1 && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
         try {
             if (currentPlayer == PlayerType::Player1) {
                 if (grid->handleClick(event.mouseButton.x, event.mouseButton.y, currentPlayer)) {
                     if (grid->checkWin(PlayerType::Player1)) {
                         winner = PlayerType::Player1;
                         state = GameState::GameOver;
-                        gameOverClock.restart();
                     }
                     else if (grid->isFull()) {
                         winner = PlayerType::None;
                         state = GameState::GameOver;
-                        gameOverClock.restart();
                     }
                     else {
                         currentPlayer = PlayerType::Player2;
@@ -92,23 +91,44 @@ void Game::handlePlayingState(const sf::Event& event) {
             }
 
             if (currentPlayer == PlayerType::Player2) {
-                ai->makeMove(*grid);
-                if (grid->checkWin(PlayerType::Player2)) {
-                    winner = PlayerType::Player2;
-                    state = GameState::GameOver;
-                    gameOverClock.restart();
-                }
-                else if (grid->isFull()) {
-                    winner = PlayerType::None;
-                    state = GameState::GameOver;
-                    gameOverClock.restart();
-                }
-                currentPlayer = PlayerType::Player1;
+                triggerAIMove();
             }
         }
         catch (const std::exception& e) {
             std::cerr << "Error during game play: " << e.what() << std::endl;
         }
+    }
+}
+
+void Game::triggerAIMove() {
+    int totalCells = gridSize * gridSize;
+    int emptyCells = grid->countEmptyCells();
+    float proportionOfEmptyCells = static_cast<float>(emptyCells) / totalCells;
+
+    aiMoveDelayDuration = 0.2f + proportionOfEmptyCells + (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) * (1.0f - proportionOfEmptyCells));
+
+    std::cout << "aiMoveDelayDuration: " << aiMoveDelayDuration << std::endl;
+
+    aiMoveDelayClock.restart();  // Start the clock
+    aiMoveScheduled = true;
+}
+
+void Game::updateGameLogic() {
+    if (aiMoveScheduled && aiMoveDelayClock.getElapsedTime() >= sf::seconds(aiMoveDelayDuration)) {
+        ai->makeMove(*grid);  // Execute AI move
+
+        if (grid->checkWin(PlayerType::Player2)) {
+            winner = PlayerType::Player2;
+            state = GameState::GameOver;
+        }
+        else if (grid->isFull()) {
+            winner = PlayerType::None;
+            state = GameState::GameOver;
+        }
+
+        currentPlayer = PlayerType::Player1;
+
+        aiMoveScheduled = false;  // Reset the schedule flag
     }
 }
 
@@ -120,10 +140,10 @@ void Game::draw() {
         ui.drawPauseMenu();
     }
     else if (state == GameState::Playing) {
-        grid->draw(window, Resource::getInstance().getFont());
+        grid->draw(window, !aiMoveScheduled);
     }
     else if (state == GameState::GameOver) {
-        grid->draw(window, Resource::getInstance().getFont(), false);  // Keep drawing the grid for a few seconds
+        grid->draw(window, false);  // Keep drawing the grid for a few seconds
         ui.drawGameOverState(winner);
     }
 }

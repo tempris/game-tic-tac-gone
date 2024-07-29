@@ -19,6 +19,8 @@ public:
     void initializeElements();
     void draw();
     void handleEvent(const sf::Event& event);
+    void triggerAIMove();
+    void updateGameLogic();
 
     enum class GameState {
         MainMenu,
@@ -32,15 +34,20 @@ public:
 private:
     sf::RenderWindow& window;
     sf::View view;
-    std::unique_ptr<IGrid> grid;
+
     PlayerType currentPlayer;
     PlayerType winner;
+
+    std::unique_ptr<IGrid> grid;
     std::unique_ptr<IAI> ai;
 
     UI ui;
 
     GameState state;
-    sf::Clock gameOverClock;
+
+    sf::Clock aiMoveDelayClock;
+    bool aiMoveScheduled = false;
+    float aiMoveDelayDuration;
 };
 
 #endif // GAME_H

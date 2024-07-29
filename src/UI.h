@@ -13,6 +13,7 @@ public:
     void handleMainMenu(const sf::Event& event);
     void handlePauseMenu(const sf::Event& event);
     void handleGameOverState(const sf::Event& event);
+    void drawMainMenuTextLogo();
     void drawMainMenu();
     void drawPauseMenu();
     void drawGameOverState(PlayerType winner);

@@ -14,7 +14,7 @@ Button::Button(float x, float y, float width, float height, sf::Font& font, cons
 
     // Adjust the text position to center it within the button
     sf::FloatRect textRect = this->text.getLocalBounds();
-    this->text.setOrigin(textRect.left + textRect.width * 0.5f, textRect.top + textRect.height / 2.0f);
+    this->text.setOrigin(textRect.left + textRect.width * 0.5f, textRect.top + textRect.height * 0.5f);
     this->text.setPosition(x + width * 0.5f, y + height * 0.5f);
 }
 

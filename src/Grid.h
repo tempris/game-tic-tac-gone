@@ -4,6 +4,7 @@
 #include <deque>
 #include <utility>
 #include <vector>
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "IGrid.h"
 #include "Shared.h"
@@ -19,10 +20,11 @@ public:
     void setCell(int row, int col, PlayerType player, bool trackMove = true) override;
     PlayerType getCell(int row, int col) const override;
     bool isFull() const override;
+    int countEmptyCells() const override;
     bool checkWin(PlayerType player) const override;
     void initialize() override;
     bool handleClick(int x, int y, PlayerType& currentPlayer) override;
-    void draw(sf::RenderWindow& window, sf::Font& font, bool canHover = true) const override;
+    void draw(sf::RenderWindow& window, bool canHover = true) const override;
     void updateSize(float windowWidth, float windowHeight) override;
 
 private:
@@ -30,6 +32,8 @@ private:
     float cellSize;
     float offsetX;
     float offsetY;
+
+    sf::Sound sound;
 
     mutable std::vector<std::pair<int, int>> winningCells;
 };

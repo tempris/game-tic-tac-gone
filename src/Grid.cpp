@@ -1,9 +1,14 @@
 #include <iostream>
 #include <algorithm>
+#include <SFML/Audio.hpp>
 #include "Grid.h"
+#include "Resource.h"
 
 Grid::Grid() {
     initialize();
+
+    sound.setBuffer(Resource::getInstance().getMoveSound());
+    sound.setVolume(25.0f);
 }
 
 bool Grid::isCellEmpty(int row, int col) const {
@@ -37,6 +42,8 @@ void Grid::setCell(int row, int col, PlayerType player, bool trackMove) {
             playerDeque.pop_front();  // Remove the oldest entry
         }
         playerDeque.push_back({ row, col });  // Add the new move
+
+        sound.play();
     }
 }
 
@@ -57,6 +64,18 @@ bool Grid::isFull() const {
         }
     }
     return true;
+}
+
+int Grid::countEmptyCells() const {
+    int emptyCount = 0;
+    for (int row = 0; row < gridSize; row++) {
+        for (int col = 0; col < gridSize; col++) {
+            if (cells[row][col] == PlayerType::None) {
+                emptyCount++;
+            }
+        }
+    }
+    return emptyCount;
 }
 
 bool Grid::checkWin(PlayerType player) const {
@@ -120,7 +139,7 @@ bool Grid::handleClick(int x, int y, PlayerType& currentPlayer) {
     return false;
 }
 
-void Grid::draw(sf::RenderWindow& window, sf::Font& font, bool canHover) const {
+void Grid::draw(sf::RenderWindow& window, bool canHover) const {
     sf::RectangleShape cellBackground(sf::Vector2f(cellSize, cellSize));
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
@@ -154,36 +173,76 @@ void Grid::draw(sf::RenderWindow& window, sf::Font& font, bool canHover) const {
         line.setSize(sf::Vector2f(cellSize * gridSize, 8)); // Reset size for horizontal lines
     }
 
-    sf::Text text;
-    text.setFont(font);
-    text.setCharacterSize(static_cast<unsigned int>(cellSize * 0.8f));
-    for (int i = 0; i < gridSize; ++i) {
-        for (int j = 0; j < gridSize; ++j) {
-            PlayerType cell = getCell(i, j);
-            if (cell != PlayerType::None) {
-                text.setString(cell == PlayerType::Player1 ? "X" : "O");
+    bool drawText = false;
 
-                auto& playerDeque = (cell == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
-                if (playerDeque.size() == 3 && playerDeque.front().first == i && playerDeque.front().second == j) {
-                    // Apply half brightness to the third oldest cell
-                    text.setFillColor((cell == PlayerType::Player1 ? sf::Color(255, 0, 0, 128) : sf::Color(0, 0, 255, 128)));
+    if (drawText) {
+        sf::Text text;
+        text.setFont(Resource::getInstance().getFont());
+        text.setCharacterSize(static_cast<unsigned int>(cellSize * 0.8f));
+        for (int i = 0; i < gridSize; ++i) {
+            for (int j = 0; j < gridSize; ++j) {
+                PlayerType cell = getCell(i, j);
+                if (cell != PlayerType::None) {
+                    text.setString(cell == PlayerType::Player1 ? "X" : "O");
+
+                    auto& playerDeque = (cell == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
+                    if (playerDeque.size() == 3 && playerDeque.front().first == i && playerDeque.front().second == j) {
+                        // Apply half brightness to the third oldest cell
+                        text.setFillColor((cell == PlayerType::Player1 ? sf::Color(255, 0, 0, 128) : sf::Color(0, 0, 255, 128)));
+                    }
+                    else {
+                        // Full brightness for other cells
+                        text.setFillColor(cell == PlayerType::Player1 ? sf::Color::Red : sf::Color::Blue);
+                    }
+
+                    // Calculate the bounding box of the text
+                    sf::FloatRect textRect = text.getLocalBounds();
+                    text.setOrigin(textRect.left + textRect.width * 0.5f, textRect.top + textRect.height * 0.5f);
+
+                    // Set the position of the text to be centered in the cell
+                    text.setPosition(
+                        offsetX + j * cellSize + cellSize * 0.5f,
+                        offsetY + i * cellSize + cellSize * 0.5f
+                    );
+
+                    window.draw(text);
                 }
-                else {
-                    // Full brightness for other cells
-                    text.setFillColor(cell == PlayerType::Player1 ? sf::Color::Red : sf::Color::Blue);
+            }
+        }
+    }
+    else {
+        sf::Sprite sprite;
+        float padding = 30.0f;  // Padding of 30 pixels on each side
+        for (int i = 0; i < gridSize; ++i) {
+            for (int j = 0; j < gridSize; ++j) {
+                PlayerType cell = getCell(i, j);
+                if (cell != PlayerType::None) {
+                    if (cell == PlayerType::Player1) {
+                        sprite.setTexture(Resource::getInstance().getXTexture());
+                    }
+                    else if (cell == PlayerType::Player2) {
+                        sprite.setTexture(Resource::getInstance().getOTexture());
+                    }
+
+                    // Set half transparency for the third oldest cell
+                    auto& playerDeque = (cell == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
+                    if (playerDeque.size() == 3 && std::make_pair(i, j) == playerDeque.front()) {
+                        sprite.setColor(sf::Color(255, 255, 255, 128)); // Half transparent
+                    }
+                    else {
+                        sprite.setColor(sf::Color(255, 255, 255, 255)); // Fully opaque
+                    }
+
+                    // Adjust position and scale for padding
+                    float paddedPositionX = offsetX + j * cellSize + padding / 2;
+                    float paddedPositionY = offsetY + i * cellSize + padding / 2;
+                    float paddedCellSize = cellSize - padding;  // Reduce cell size by padding on both sides
+
+                    sprite.setPosition(paddedPositionX, paddedPositionY);
+                    sprite.setScale(paddedCellSize / sprite.getLocalBounds().width, paddedCellSize / sprite.getLocalBounds().height);
+
+                    window.draw(sprite);
                 }
-
-                // Calculate the bounding box of the text
-                sf::FloatRect textRect = text.getLocalBounds();
-                text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-
-                // Set the position of the text to be centered in the cell
-                text.setPosition(
-                    offsetX + j * cellSize + cellSize / 2.0f,
-                    offsetY + i * cellSize + cellSize / 2.0f
-                );
-
-                window.draw(text);
             }
         }
     }

@@ -30,6 +30,7 @@ int main() {
 
         while (window.isOpen()) {
             window.handleEvents();
+            game.updateGameLogic();
             window.clear();
             game.draw();
             window.display();
