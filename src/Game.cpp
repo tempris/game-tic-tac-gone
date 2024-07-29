@@ -14,7 +14,7 @@ Game::Game(sf::RenderWindow& window, const sf::View& view, std::unique_ptr<IGrid
 }
 
 void Game::resizeElements() {
-    grid->updateSize(window.getSize().x, window.getSize().y);
+    grid->updateSize(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y));
     ui.initializeElements();
 }
 

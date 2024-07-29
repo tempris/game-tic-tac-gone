@@ -28,7 +28,6 @@ private:
 
     std::unique_ptr<IButton> startButton;
     std::unique_ptr<IButton> quitButton;
-    std::unique_ptr<IButton> doNothingButton;
     std::unique_ptr<IButton> resumeButton;
     std::unique_ptr<IButton> mainMenuButton;
 };

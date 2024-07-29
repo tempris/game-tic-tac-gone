@@ -13,12 +13,30 @@ bool Grid::isCellEmpty(int row, int col) const {
     return cells[row][col] == PlayerType::None;
 }
 
-void Grid::setCell(int row, int col, PlayerType player) {
+void Grid::setCell(int row, int col, PlayerType player, bool trackMove) {
     if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
         std::cerr << "Invalid cell position (" << row << ", " << col << ")" << std::endl;
         return;
     }
+
+    // Set the new cell
     cells[row][col] = player;
+
+    if (trackMove) {
+        auto& playerDeque = (player == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
+
+        // Keep only the last three moves
+        if (playerDeque.size() == 3) {
+            auto oldestCell = playerDeque.front();
+            // Set the oldest cell to None before removing it from the deque
+            if (oldestCell.first >= 0 && oldestCell.first < gridSize &&
+                oldestCell.second >= 0 && oldestCell.second < gridSize) {
+                cells[oldestCell.first][oldestCell.second] = PlayerType::None;
+            }
+            playerDeque.pop_front();  // Remove the oldest entry
+        }
+        playerDeque.push_back({ row, col });  // Add the new move
+    }
 }
 
 PlayerType Grid::getCell(int row, int col) const {
@@ -60,6 +78,10 @@ void Grid::initialize() {
             cells[i][j] = PlayerType::None;
         }
     }
+
+    // Clear the move tracking deques for both players
+    lastThreeCellsPlayer1.clear();
+    lastThreeCellsPlayer2.clear();
 }
 
 bool Grid::handleClick(int x, int y, PlayerType& currentPlayer) {
@@ -98,11 +120,26 @@ void Grid::draw(sf::RenderWindow& window, sf::Font& font) const {
             PlayerType cell = getCell(i, j);
             if (cell != PlayerType::None) {
                 text.setString(cell == PlayerType::Player1 ? "X" : "O");
-                text.setFillColor(cell == PlayerType::Player1 ? sf::Color::Red : sf::Color::Blue); // Different colors for players
 
-                // Set the position of the text
-                text.setPosition(offsetX + j * cellSize + cellSize * 0.1f, offsetY + i * cellSize);
-                text.setScale(1.0f, 1.0f);
+                auto& playerDeque = (cell == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
+                if (playerDeque.size() == 3 && playerDeque.front().first == i && playerDeque.front().second == j) {
+                    // Apply half brightness to the third oldest cell
+                    text.setFillColor((cell == PlayerType::Player1 ? sf::Color(255, 0, 0, 128) : sf::Color(0, 0, 255, 128)));
+                }
+                else {
+                    // Full brightness for other cells
+                    text.setFillColor(cell == PlayerType::Player1 ? sf::Color::Red : sf::Color::Blue);
+                }
+
+                // Calculate the bounding box of the text
+                sf::FloatRect textRect = text.getLocalBounds();
+                text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+
+                // Set the position of the text to be centered in the cell
+                text.setPosition(
+                    offsetX + j * cellSize + cellSize / 2.0f,
+                    offsetY + i * cellSize + cellSize / 2.0f
+                );
 
                 window.draw(text);
             }
@@ -112,6 +149,6 @@ void Grid::draw(sf::RenderWindow& window, sf::Font& font) const {
 
 void Grid::updateSize(float windowWidth, float windowHeight) {
     cellSize = std::min(windowWidth, windowHeight) / gridSize;
-    offsetX = (windowWidth - cellSize * gridSize) / 2.0f;
-    offsetY = (windowHeight - cellSize * gridSize) / 2.0f;
+    offsetX = (windowWidth - cellSize * gridSize) * 0.5f;
+    offsetY = (windowHeight - cellSize * gridSize) * 0.5f;
 }

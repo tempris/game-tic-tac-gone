@@ -7,7 +7,7 @@ Window::Window(const std::string& title, unsigned int width, unsigned int height
 
 void Window::updateView() {
     view.setSize(window.getSize().x, window.getSize().y);
-    view.setCenter(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
+    view.setCenter(window.getSize().x * 0.5f, window.getSize().y * 0.5f);
     window.setView(view);
 }
 

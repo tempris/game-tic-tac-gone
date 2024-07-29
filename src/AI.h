@@ -8,7 +8,7 @@
 class AI : public IAI {
 public:
     AI(PlayerType aiPlayer, PlayerType humanPlayer);
-    void makeMove(IGrid& grid) override;
+    void makeMove(IGrid& grid);
 
 private:
     PlayerType aiPlayer;

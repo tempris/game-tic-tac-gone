@@ -8,7 +8,7 @@
 
 int main() {
     try {
-        Window window("Tic-Tac-Toe-Bananza", 800, 600);
+        Window window("Tic-Tac-Gone!", 800, 600);
 
         // Initialize the Resource to load the font
         Resource& resource = Resource::getInstance();

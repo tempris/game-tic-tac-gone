@@ -8,7 +8,7 @@ class IGrid {
 public:
     virtual ~IGrid() = default;
     virtual bool isCellEmpty(int row, int col) const = 0;
-    virtual void setCell(int row, int col, PlayerType player) = 0;
+    virtual void setCell(int row, int col, PlayerType player, bool trackMove = true) = 0;
     virtual PlayerType getCell(int row, int col) const = 0;
     virtual bool isFull() const = 0;
     virtual bool checkWin(PlayerType player) const = 0;
