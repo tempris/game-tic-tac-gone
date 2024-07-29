@@ -14,8 +14,8 @@ Button::Button(float x, float y, float width, float height, sf::Font& font, cons
 
     // Adjust the text position to center it within the button
     sf::FloatRect textRect = this->text.getLocalBounds();
-    this->text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-    this->text.setPosition(x + width / 2.0f, y + height / 2.0f);
+    this->text.setOrigin(textRect.left + textRect.width * 0.5f, textRect.top + textRect.height / 2.0f);
+    this->text.setPosition(x + width * 0.5f, y + height * 0.5f);
 }
 
 void Button::update(const sf::Vector2i& mousePos, const sf::Event& event) {
@@ -55,9 +55,9 @@ float Button::getHeight() const {
 void Button::setPosition(float x, float y) {
     button.setPosition(x, y);
     sf::FloatRect textRect = text.getLocalBounds();
-    text.setPosition(x + button.getSize().x / 2.0f, y + button.getSize().y / 2.0f);
+    text.setPosition(x + button.getSize().x * 0.5f, y + button.getSize().y * 0.5f);
 }
 
 void Button::center(float windowWidth, float windowHeight, float yOffset) {
-    setPosition((windowWidth - getWidth()) / 2.0f, (windowHeight - getHeight()) / 2.0f + yOffset);
+    setPosition((windowWidth - getWidth()) * 0.5f, (windowHeight - getHeight()) * 0.5f + yOffset);
 }
