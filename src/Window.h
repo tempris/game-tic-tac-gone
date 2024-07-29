@@ -22,6 +22,8 @@ public:
     void onEvent(const EventCallback& callback);
 
 private:
+    void setIcon();
+    
     sf::RenderWindow window;
     sf::View view;
     std::vector<std::function<void()>> resizeCallbacks;

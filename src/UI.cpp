@@ -10,7 +10,8 @@ UI::UI(sf::RenderWindow& window, sf::Font& font)
     startClassicButton(std::make_unique<Button>(0, 0, 225, 50, font, "Classic Game")),
     quitButton(std::make_unique<Button>(0, 0, 225, 50, font, "Quit")),
     resumeButton(std::make_unique<Button>(0, 0, 225, 50, font, "Resume")),
-    mainMenuButton(std::make_unique<Button>(0, 0, 225, 50, font, "Main Menu")) {
+    mainMenuPauseButton(std::make_unique<Button>(0, 0, 225, 50, font, "Main Menu")),
+    mainMenuGameOverButton(std::make_unique<Button>(0, 0, 225, 50, font, "Main Menu")) {
 }
 
 void UI::initializeElements() {
@@ -19,7 +20,8 @@ void UI::initializeElements() {
         startClassicButton->center(window, 100);
         quitButton->center(window, 175);
         resumeButton->center(window, -50);
-        mainMenuButton->center(window, 125);
+        mainMenuPauseButton->center(window, 50);
+        mainMenuGameOverButton->center(window, 125);
     }
     catch (const std::exception& e) {
         std::cerr << "Failed to initialize UI elements: " << e.what() << std::endl;
@@ -40,7 +42,7 @@ void UI::handleMainMenu(const sf::Event& event) {
 void UI::handlePauseMenu(const sf::Event& event) {
     try {
         resumeButton->update(sf::Mouse::getPosition(window), event);
-        mainMenuButton->update(sf::Mouse::getPosition(window), event);
+        mainMenuPauseButton->update(sf::Mouse::getPosition(window), event);
     }
     catch (const std::exception& e) {
         std::cerr << "Error handling pause menu event: " << e.what() << std::endl;
@@ -49,62 +51,11 @@ void UI::handlePauseMenu(const sf::Event& event) {
 
 void UI::handleGameOverState(const sf::Event& event) {
     try {
-        mainMenuButton->update(sf::Mouse::getPosition(window), event);
+        mainMenuGameOverButton->update(sf::Mouse::getPosition(window), event);
     }
     catch (const std::exception& e) {
         std::cerr << "Error handling game over state event: " << e.what() << std::endl;
     }
-}
-
-void UI::drawMainMenuTextLogo() {
-    sf::Text text;
-    text.setFont(Resource::getInstance().getFont());
-    text.setCharacterSize(50);  // Set the character size
-
-    float textRectHeight = 0.0f;
-
-    // Calculate total width
-    text.setString("Tic - ");
-    sf::FloatRect ticRect = text.getLocalBounds();
-    float ticWidth = ticRect.width;
-    textRectHeight += ticRect.height;
-
-    text.setString("Tac - ");
-    sf::FloatRect tacRect = text.getLocalBounds();
-    float tacWidth = tacRect.width;
-    textRectHeight += ticRect.height;
-
-    text.setString("Gone!");
-    sf::FloatRect goneRect = text.getLocalBounds();
-    float goneWidth = goneRect.width;
-    textRectHeight += ticRect.height;
-
-    float totalWidth = ticWidth + tacWidth + goneWidth;
-
-    // Calculate starting position to center the text
-    float startX = (window.getSize().x - totalWidth) * 0.5f;
-    float yPosition = window.getSize().y * 0.5f - 100.0f;  // Y position for all texts
-
-    // Draw "Tic-"
-    text.setString("Tic - ");
-    text.setFillColor(sf::Color::Red);  // Red color for "Tic"
-    text.setOrigin(0, textRectHeight / 2);
-    text.setPosition(startX, yPosition);
-    window.draw(text);
-
-    // Draw "Tac-"
-    text.setString("Tac - ");
-    text.setFillColor(sf::Color::Blue);  // Blue color for "Tac"
-    text.setOrigin(0, textRectHeight / 2);
-    text.setPosition(startX + ticWidth, yPosition);
-    window.draw(text);
-
-    // Draw "Gone!"
-    text.setString("Gone!");
-    text.setFillColor(sf::Color(255, 0, 0, 128));  // Half-transparent red for "Gone"
-    text.setOrigin(0, textRectHeight / 2);
-    text.setPosition(startX + ticWidth + tacWidth, yPosition);
-    window.draw(text);
 }
 
 void UI::drawMainMenu() {
@@ -122,7 +73,7 @@ void UI::drawMainMenu() {
 
 void UI::drawPauseMenu() {
     resumeButton->draw(window);
-    mainMenuButton->draw(window);
+    mainMenuPauseButton->draw(window);
 }
 
 void UI::drawGameOverState(PlayerType winner) {
@@ -191,7 +142,7 @@ void UI::drawGameOverState(PlayerType winner) {
         window.draw(playerSprite);
         window.draw(winSprite);
     }
-    mainMenuButton->draw(window);
+    mainMenuGameOverButton->draw(window);
 
 }
 
@@ -212,5 +163,5 @@ bool UI::isResumeButtonReleased() {
 }
 
 bool UI::isMainMenuButtonReleased() {
-    return mainMenuButton->isReleased();
+    return mainMenuPauseButton->isReleased() || mainMenuGameOverButton->isReleased();
 }

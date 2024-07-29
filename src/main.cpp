@@ -1,10 +1,10 @@
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Game.h"
 #include "Resource.h"
 #include "Window.h"
 #include "Grid.h"
 #include "AI.h"
-#include <iostream>
 
 int main() {
     try {

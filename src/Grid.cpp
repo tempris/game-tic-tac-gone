@@ -179,76 +179,37 @@ void Grid::draw(sf::RenderWindow& window, bool canHover) const {
         line.setSize(sf::Vector2f(cellSize * gridSize, 8)); // Reset size for horizontal lines
     }
 
-    bool drawText = false;
-
-    if (drawText) {
-        sf::Text text;
-        text.setFont(Resource::getInstance().getFont());
-        text.setCharacterSize(static_cast<unsigned int>(cellSize * 0.8f));
-        for (int i = 0; i < gridSize; ++i) {
-            for (int j = 0; j < gridSize; ++j) {
-                PlayerType cell = getCell(i, j);
-                if (cell != PlayerType::None) {
-                    text.setString(cell == PlayerType::Player1 ? "X" : "O");
-
-                    auto& playerDeque = (cell == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
-                    if (playerDeque.size() == 3 && playerDeque.front().first == i && playerDeque.front().second == j) {
-                        // Apply half brightness to the third oldest cell
-                        text.setFillColor((cell == PlayerType::Player1 ? sf::Color(255, 0, 0, 128) : sf::Color(0, 0, 255, 128)));
-                    }
-                    else {
-                        // Full brightness for other cells
-                        text.setFillColor(cell == PlayerType::Player1 ? sf::Color::Red : sf::Color::Blue);
-                    }
-
-                    // Calculate the bounding box of the text
-                    sf::FloatRect textRect = text.getLocalBounds();
-                    text.setOrigin(textRect.left + textRect.width * 0.5f, textRect.top + textRect.height * 0.5f);
-
-                    // Set the position of the text to be centered in the cell
-                    text.setPosition(
-                        offsetX + j * cellSize + cellSize * 0.5f,
-                        offsetY + i * cellSize + cellSize * 0.5f
-                    );
-
-                    window.draw(text);
+    sf::Sprite sprite;
+    float padding = 30.0f;  // Padding of 30 pixels on each side
+    for (int i = 0; i < gridSize; ++i) {
+        for (int j = 0; j < gridSize; ++j) {
+            PlayerType cell = getCell(i, j);
+            if (cell != PlayerType::None) {
+                if (cell == PlayerType::Player1) {
+                    sprite.setTexture(Resource::getInstance().getXTexture());
                 }
-            }
-        }
-    }
-    else {
-        sf::Sprite sprite;
-        float padding = 30.0f;  // Padding of 30 pixels on each side
-        for (int i = 0; i < gridSize; ++i) {
-            for (int j = 0; j < gridSize; ++j) {
-                PlayerType cell = getCell(i, j);
-                if (cell != PlayerType::None) {
-                    if (cell == PlayerType::Player1) {
-                        sprite.setTexture(Resource::getInstance().getXTexture());
-                    }
-                    else if (cell == PlayerType::Player2) {
-                        sprite.setTexture(Resource::getInstance().getOTexture());
-                    }
-
-                    // Set half transparency for the third oldest cell
-                    auto& playerDeque = (cell == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
-                    if (!classic && playerDeque.size() == 3 && std::make_pair(i, j) == playerDeque.front()) {
-                        sprite.setColor(sf::Color(255, 255, 255, 128)); // Half transparent
-                    }
-                    else {
-                        sprite.setColor(sf::Color(255, 255, 255, 255)); // Fully opaque
-                    }
-
-                    // Adjust position and scale for padding
-                    float paddedPositionX = offsetX + j * cellSize + padding / 2;
-                    float paddedPositionY = offsetY + i * cellSize + padding / 2;
-                    float paddedCellSize = cellSize - padding;  // Reduce cell size by padding on both sides
-
-                    sprite.setPosition(paddedPositionX, paddedPositionY);
-                    sprite.setScale(paddedCellSize / sprite.getLocalBounds().width, paddedCellSize / sprite.getLocalBounds().height);
-
-                    window.draw(sprite);
+                else if (cell == PlayerType::Player2) {
+                    sprite.setTexture(Resource::getInstance().getOTexture());
                 }
+
+                // Set half transparency for the third oldest cell
+                auto& playerDeque = (cell == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
+                if (!classic && playerDeque.size() == 3 && std::make_pair(i, j) == playerDeque.front()) {
+                    sprite.setColor(sf::Color(255, 255, 255, 128)); // Half transparent
+                }
+                else {
+                    sprite.setColor(sf::Color(255, 255, 255, 255)); // Fully opaque
+                }
+
+                // Adjust position and scale for padding
+                float paddedPositionX = offsetX + j * cellSize + padding / 2;
+                float paddedPositionY = offsetY + i * cellSize + padding / 2;
+                float paddedCellSize = cellSize - padding;  // Reduce cell size by padding on both sides
+
+                sprite.setPosition(paddedPositionX, paddedPositionY);
+                sprite.setScale(paddedCellSize / sprite.getLocalBounds().width, paddedCellSize / sprite.getLocalBounds().height);
+
+                window.draw(sprite);
             }
         }
     }

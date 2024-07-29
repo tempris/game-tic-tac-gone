@@ -31,7 +31,8 @@ private:
     std::unique_ptr<IButton> startClassicButton;
     std::unique_ptr<IButton> quitButton;
     std::unique_ptr<IButton> resumeButton;
-    std::unique_ptr<IButton> mainMenuButton;
+    std::unique_ptr<IButton> mainMenuPauseButton;
+    std::unique_ptr<IButton> mainMenuGameOverButton;
 };
 
 #endif // UI_H

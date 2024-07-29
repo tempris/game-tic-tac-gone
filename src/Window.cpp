@@ -3,6 +3,14 @@
 Window::Window(const std::string& title, unsigned int width, unsigned int height)
     : window(sf::VideoMode(width, height), title), view(sf::FloatRect(0, 0, static_cast<float>(width), static_cast<float>(height))) {
     window.setView(view);
+    setIcon();
+}
+
+void Window::setIcon() {
+    sf::Image icon;
+    if (icon.loadFromFile("Content/Image/Brand/Icon16.png")) {
+        window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+    }
 }
 
 void Window::updateView() {
