@@ -11,7 +11,7 @@ public:
     virtual void draw(sf::RenderWindow& window) = 0;
     virtual bool isReleased() = 0;
     virtual void setPosition(float x, float y) = 0;
-    virtual void center(float windowWidth, float windowHeight, float yOffset) = 0;
+    virtual void center(sf::RenderWindow& window, float yOffset) = 0;
 };
 
 #endif // IBUTTON_H

@@ -15,7 +15,7 @@ public:
     float getWidth() const;
     float getHeight() const;
     void setPosition(float x, float y) override;
-    void center(float windowWidth, float windowHeight, float yOffset) override;
+    void center(sf::RenderWindow& window, float yOffset) override;
 
 private:
     sf::RectangleShape button;

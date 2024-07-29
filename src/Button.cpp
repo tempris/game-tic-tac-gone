@@ -73,6 +73,6 @@ void Button::setPosition(float x, float y) {
     text.setPosition(x + button.getSize().x * 0.5f, y + button.getSize().y * 0.5f);
 }
 
-void Button::center(float windowWidth, float windowHeight, float yOffset) {
-    setPosition((windowWidth - getWidth()) * 0.5f, (windowHeight - getHeight()) * 0.5f + yOffset);
+void Button::center(sf::RenderWindow& window, float yOffset) {
+    setPosition((window.getSize().x - getWidth()) * 0.5f, (window.getSize().y - getHeight()) * 0.5f + yOffset);
 }

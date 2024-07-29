@@ -15,11 +15,11 @@ UI::UI(sf::RenderWindow& window, sf::Font& font)
 
 void UI::initializeElements() {
     try {
-        startButton->center(window.getSize().x, window.getSize().y, 25);
-        startClassicButton->center(window.getSize().x, window.getSize().y, 100);
-        quitButton->center(window.getSize().x, window.getSize().y, 175);
-        resumeButton->center(window.getSize().x, window.getSize().y, -50);
-        mainMenuButton->center(window.getSize().x, window.getSize().y, 125);
+        startButton->center(window, 25);
+        startClassicButton->center(window, 100);
+        quitButton->center(window, 175);
+        resumeButton->center(window, -50);
+        mainMenuButton->center(window, 125);
     }
     catch (const std::exception& e) {
         std::cerr << "Failed to initialize UI elements: " << e.what() << std::endl;
