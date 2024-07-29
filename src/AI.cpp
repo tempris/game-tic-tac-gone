@@ -6,7 +6,7 @@ AI::AI(PlayerType aiPlayer, PlayerType humanPlayer)
 
 void AI::makeMove(IGrid& grid) {
     int bestMove = -1;
-    int bestValue = -1000;
+    int bestValue = std::numeric_limits<int>::min();
     for (int row = 0; row < gridSize; ++row) {
         for (int col = 0; col < gridSize; ++col) {
             if (grid.isCellEmpty(row, col)) {
@@ -23,11 +23,15 @@ void AI::makeMove(IGrid& grid) {
     if (bestMove != -1) {
         int row = bestMove / gridSize;
         int col = bestMove % gridSize;
-        if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
-            std::cerr << "AI move out of bounds (" << row << ", " << col << ")" << std::endl;
-            return;
+        if (grid.isCellEmpty(row, col)) {  // Double-check if the chosen cell is still empty
+            grid.setCell(row, col, aiPlayer);
         }
-        grid.setCell(row, col, aiPlayer);
+        else {
+            std::cerr << "AI error: Attempted to place on a non-empty cell or out of bounds." << std::endl;
+        }
+    }
+    else {
+        std::cerr << "AI error: No valid moves available." << std::endl;
     }
 }
 

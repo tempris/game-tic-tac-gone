@@ -36,7 +36,6 @@ void UI::handleMainMenu(const sf::Event& event) {
     }
 }
 
-
 void UI::handlePauseMenu(const sf::Event& event) {
     try {
         resumeButton->update(sf::Mouse::getPosition(window), event);
