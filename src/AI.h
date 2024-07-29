@@ -14,7 +14,7 @@ private:
     PlayerType aiPlayer;
     PlayerType humanPlayer;
 
-    int minimax(IGrid& grid, int depth, bool isMaximizing);
+    int minimax(IGrid& grid, int depth, bool isMaximizing, int alpha, int beta);
     int evaluateGrid(const IGrid& grid);
     bool isMovesLeft(const IGrid& grid);
 };

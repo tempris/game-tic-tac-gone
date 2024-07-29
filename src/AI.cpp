@@ -7,11 +7,14 @@ AI::AI(PlayerType aiPlayer, PlayerType humanPlayer)
 void AI::makeMove(IGrid& grid) {
     int bestMove = -1;
     int bestValue = std::numeric_limits<int>::min();
+    int alpha = std::numeric_limits<int>::min();
+    int beta = std::numeric_limits<int>::max();
+
     for (int row = 0; row < gridSize; ++row) {
         for (int col = 0; col < gridSize; ++col) {
             if (grid.isCellEmpty(row, col)) {
                 grid.setCell(row, col, aiPlayer);
-                int moveValue = minimax(grid, 0, false);
+                int moveValue = minimax(grid, 0, false, alpha, beta);
                 grid.setCell(row, col, PlayerType::None);
                 if (moveValue > bestValue) {
                     bestMove = row * gridSize + col;
@@ -35,7 +38,7 @@ void AI::makeMove(IGrid& grid) {
     }
 }
 
-int AI::minimax(IGrid& grid, int depth, bool isMaximizing) {
+int AI::minimax(IGrid& grid, int depth, bool isMaximizing, int alpha, int beta) {
     int score = evaluateGrid(grid);
 
     if (score == 10)
@@ -47,29 +50,37 @@ int AI::minimax(IGrid& grid, int depth, bool isMaximizing) {
 
     if (isMaximizing) {
         int best = std::numeric_limits<int>::min();
-
         for (int i = 0; i < gridSize; ++i) {
             for (int j = 0; j < gridSize; ++j) {
                 if (grid.isCellEmpty(i, j)) {
                     grid.setCell(i, j, aiPlayer);
-                    best = std::max(best, minimax(grid, depth + 1, false));
+                    best = std::max(best, minimax(grid, depth + 1, false, alpha, beta));
                     grid.setCell(i, j, PlayerType::None);
+                    alpha = std::max(alpha, best);
+                    if (beta <= alpha)
+                        break; // Beta cut-off
                 }
             }
+            if (beta <= alpha)
+                break; // Alpha cut-off
         }
         return best;
     }
     else {
         int best = std::numeric_limits<int>::max();
-
         for (int i = 0; i < gridSize; ++i) {
             for (int j = 0; j < gridSize; ++j) {
                 if (grid.isCellEmpty(i, j)) {
                     grid.setCell(i, j, humanPlayer);
-                    best = std::min(best, minimax(grid, depth + 1, true));
+                    best = std::min(best, minimax(grid, depth + 1, true, alpha, beta));
                     grid.setCell(i, j, PlayerType::None);
+                    beta = std::min(beta, best);
+                    if (beta <= alpha)
+                        break; // Alpha cut-off
                 }
             }
+            if (beta <= alpha)
+                break; // Beta cut-off
         }
         return best;
     }

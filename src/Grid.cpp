@@ -32,7 +32,7 @@ PlayerType Grid::getCell(int row, int col) const {
 bool Grid::isFull() const {
     for (int i = 0; i < gridSize; ++i) {
         for (int j = 0; j < gridSize; ++j) {
-            if (cells[i][j] == PlayerType::None) {
+            if (isCellEmpty(i, j)) {
                 return false;
             }
         }
