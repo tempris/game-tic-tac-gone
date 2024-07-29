@@ -28,7 +28,7 @@ void Grid::setCell(int row, int col, PlayerType player, bool trackMove) {
     // Set the new cell
     cells[row][col] = player;
 
-    if (trackMove) {
+    if (trackMove && !classic) {
         auto& playerDeque = (player == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
 
         // Keep only the last three moves
@@ -42,7 +42,9 @@ void Grid::setCell(int row, int col, PlayerType player, bool trackMove) {
             playerDeque.pop_front();  // Remove the oldest entry
         }
         playerDeque.push_back({ row, col });  // Add the new move
+    }
 
+    if (trackMove || player == PlayerType::Player1) {
         sound.play();
     }
 }
@@ -107,6 +109,10 @@ bool Grid::checkWin(PlayerType player) const {
         return true;
     }
     return false;
+}
+
+void Grid::setClassic(bool enable) {
+    classic = enable;
 }
 
 void Grid::initialize() {
@@ -226,7 +232,7 @@ void Grid::draw(sf::RenderWindow& window, bool canHover) const {
 
                     // Set half transparency for the third oldest cell
                     auto& playerDeque = (cell == PlayerType::Player1) ? lastThreeCellsPlayer1 : lastThreeCellsPlayer2;
-                    if (playerDeque.size() == 3 && std::make_pair(i, j) == playerDeque.front()) {
+                    if (!classic && playerDeque.size() == 3 && std::make_pair(i, j) == playerDeque.front()) {
                         sprite.setColor(sf::Color(255, 255, 255, 128)); // Half transparent
                     }
                     else {

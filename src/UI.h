@@ -19,6 +19,7 @@ public:
     void drawGameOverState(PlayerType winner);
 
     bool isStartButtonReleased();
+    bool isStartClassicButtonReleased();
     bool isQuitButtonReleased();
     bool isResumeButtonReleased();
     bool isMainMenuButtonReleased();
@@ -27,6 +28,7 @@ private:
     sf::RenderWindow& window;
 
     std::unique_ptr<IButton> startButton;
+    std::unique_ptr<IButton> startClassicButton;
     std::unique_ptr<IButton> quitButton;
     std::unique_ptr<IButton> resumeButton;
     std::unique_ptr<IButton> mainMenuButton;

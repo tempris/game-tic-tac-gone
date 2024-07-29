@@ -6,16 +6,18 @@
 
 UI::UI(sf::RenderWindow& window, sf::Font& font)
     : window(window),
-    startButton(std::make_unique<Button>(0, 0, 200, 50, font, "Start Game")),
-    quitButton(std::make_unique<Button>(0, 0, 200, 50, font, "Quit")),
-    resumeButton(std::make_unique<Button>(0, 0, 200, 50, font, "Resume")),
-    mainMenuButton(std::make_unique<Button>(0, 0, 200, 50, font, "Main Menu")) {
+    startButton(std::make_unique<Button>(0, 0, 225, 50, font, "Start Game")),
+    startClassicButton(std::make_unique<Button>(0, 0, 225, 50, font, "Classic Game")),
+    quitButton(std::make_unique<Button>(0, 0, 225, 50, font, "Quit")),
+    resumeButton(std::make_unique<Button>(0, 0, 225, 50, font, "Resume")),
+    mainMenuButton(std::make_unique<Button>(0, 0, 225, 50, font, "Main Menu")) {
 }
 
 void UI::initializeElements() {
     try {
-        startButton->center(window.getSize().x, window.getSize().y, 50);
-        quitButton->center(window.getSize().x, window.getSize().y, 150);
+        startButton->center(window.getSize().x, window.getSize().y, 25);
+        startClassicButton->center(window.getSize().x, window.getSize().y, 100);
+        quitButton->center(window.getSize().x, window.getSize().y, 175);
         resumeButton->center(window.getSize().x, window.getSize().y, -50);
         mainMenuButton->center(window.getSize().x, window.getSize().y, 125);
     }
@@ -27,6 +29,7 @@ void UI::initializeElements() {
 void UI::handleMainMenu(const sf::Event& event) {
     try {
         startButton->update(sf::Mouse::getPosition(window), event);
+        startClassicButton->update(sf::Mouse::getPosition(window), event);
         quitButton->update(sf::Mouse::getPosition(window), event);
     }
     catch (const std::exception& e) {
@@ -113,6 +116,7 @@ void UI::drawMainMenu() {
 
     // Draw buttons
     startButton->draw(window);
+    startClassicButton->draw(window);
     quitButton->draw(window);
 }
 
@@ -127,7 +131,7 @@ void UI::drawGameOverState(PlayerType winner) {
     // Create the background panel
     sf::RectangleShape backgroundPanel;
 
-    backgroundPanel.setFillColor(sf::Color(0, 0, 0, 200));
+    backgroundPanel.setFillColor(sf::Color(0, 0, 0, 220));
 
     if (useText) {
         backgroundPanel.setSize(sf::Vector2f(250.0f, 250.0f));
@@ -193,6 +197,10 @@ void UI::drawGameOverState(PlayerType winner) {
 
 bool UI::isStartButtonReleased() {
     return startButton->isReleased();
+}
+
+bool UI::isStartClassicButtonReleased() {
+    return startClassicButton->isReleased();
 }
 
 bool UI::isQuitButtonReleased() {

@@ -23,7 +23,6 @@ void Game::resizeElements() {
 }
 
 void Game::initializeElements() {
-    grid->initialize();
     resizeElements();
 }
 
@@ -33,6 +32,24 @@ void Game::handleEvent(const sf::Event& event) {
             ui.handleMainMenu(event);
             if (ui.isStartButtonReleased()) {
                 state = GameState::Playing;
+                Grid* concreteGrid = dynamic_cast<Grid*>(grid.get());
+                if (concreteGrid) {
+                    concreteGrid->setClassic(false);
+                }
+                else {
+                    throw std::runtime_error("Grid implementation does not support setClassic");
+                }
+                grid->initialize();
+            }
+            if (ui.isStartClassicButtonReleased()) {
+                state = GameState::Playing;
+                Grid* concreteGrid = dynamic_cast<Grid*>(grid.get());
+                if (concreteGrid) {
+                    concreteGrid->setClassic(true);
+                }
+                else {
+                    throw std::runtime_error("Grid implementation does not support setClassic");
+                }
                 grid->initialize();
             }
             if (ui.isQuitButtonReleased()) {
@@ -106,8 +123,6 @@ void Game::triggerAIMove() {
     float proportionOfEmptyCells = static_cast<float>(emptyCells) / totalCells;
 
     aiMoveDelayDuration = 0.2f + proportionOfEmptyCells + (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) * (1.0f - proportionOfEmptyCells));
-
-    std::cout << "aiMoveDelayDuration: " << aiMoveDelayDuration << std::endl;
 
     aiMoveDelayClock.restart();  // Start the clock
     aiMoveScheduled = true;

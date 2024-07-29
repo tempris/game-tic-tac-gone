@@ -23,6 +23,7 @@ public:
     int countEmptyCells() const override;
     bool checkWin(PlayerType player) const override;
     void initialize() override;
+    void setClassic(bool enable = false);
     bool handleClick(int x, int y, PlayerType& currentPlayer) override;
     void draw(sf::RenderWindow& window, bool canHover = true) const override;
     void updateSize(float windowWidth, float windowHeight) override;
@@ -32,6 +33,7 @@ private:
     float cellSize;
     float offsetX;
     float offsetY;
+    bool classic = true;
 
     sf::Sound sound;
 
